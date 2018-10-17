@@ -1,5 +1,7 @@
 package com.rachev.getmydrivercardapp.models;
 
+import com.rachev.getmydrivercardapp.utils.Constants;
+
 import java.io.Serializable;
 
 public class UserDTO implements Serializable
@@ -18,7 +20,7 @@ public class UserDTO implements Serializable
     public UserDTO(String socialId)
     {
         setSocialId(socialId);
-        setRole("user");
+        setRole(Constants.USER_ROLE);
         setEmail(null);
         setPassword(null);
     }
@@ -27,8 +29,8 @@ public class UserDTO implements Serializable
     {
         setEmail(email);
         setPassword(password);
-        setLoginType("custom");
-        setRole("user");
+        setLoginType(Constants.LOGIN_TYPE_CUSTOM);
+        setRole(Constants.USER_ROLE);
         setSocialId(null);
     }
     

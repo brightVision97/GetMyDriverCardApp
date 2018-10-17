@@ -2,30 +2,28 @@ package com.rachev.getmydrivercardapp.repositories;
 
 import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.http.base.HttpRequester;
-import com.rachev.getmydrivercardapp.models.UserDTO;
-import com.rachev.getmydrivercardapp.parsers.GsonJsonParser;
 import com.rachev.getmydrivercardapp.parsers.base.JsonParser;
-import com.rachev.getmydrivercardapp.repositories.base.UsersRepository;
+import com.rachev.getmydrivercardapp.repositories.base.Repository;
 import com.rachev.getmydrivercardapp.utils.Constants;
 
 import java.io.IOException;
 import java.util.List;
 
-public class HttpUsersRepository implements UsersRepository
+public class HttpRepository<T> implements Repository<T>
 {
     private final HttpRequester mHttpRequester;
     private final String mServerUrl;
-    private final JsonParser<UserDTO> mJsonParser;
+    private final JsonParser<T> mJsonParser;
     
-    public HttpUsersRepository()
+    public HttpRepository()
     {
         mServerUrl = Constants.BASE_SERVER_URL + "/users";
         mHttpRequester = GetMyDriverCardApplication.getHttpRequester();
-        mJsonParser = new GsonJsonParser<>(UserDTO.class, UserDTO[].class);
+        mJsonParser = (JsonParser<T>) GetMyDriverCardApplication.getJsonParser();
     }
     
     @Override
-    public List<UserDTO> getAll() throws IOException
+    public List<T> getAll() throws IOException
     {
         String usersJson = mHttpRequester.get(mServerUrl);
         
@@ -33,7 +31,7 @@ public class HttpUsersRepository implements UsersRepository
     }
     
     @Override
-    public UserDTO getById(int id) throws IOException
+    public T getById(int id) throws IOException
     {
         String url = mServerUrl + "/" + id;
         String json = mHttpRequester.get(url);
@@ -42,7 +40,7 @@ public class HttpUsersRepository implements UsersRepository
     }
     
     @Override
-    public UserDTO add(UserDTO item) throws IOException
+    public T add(T item) throws IOException
     {
         String requestBody = mJsonParser.toJson(item);
         String responseBody = mHttpRequester.post(mServerUrl, requestBody);
