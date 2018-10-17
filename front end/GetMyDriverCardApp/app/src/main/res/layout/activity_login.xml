@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -41,8 +42,10 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="5dp"
                 android:textColor="@color/white"
                 android:tag="custom_login_button"
+                android:background="@drawable/rounded_button"
                 android:text="@string/sign_in"
                 tools:ignore="ButtonStyle" />
 
@@ -51,10 +54,12 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:textColor="@color/white"
+                android:background="@drawable/rounded_button"
                 android:tag="custom_signup_button"
                 android:text="@string/sign_up_button"
-                tools:ignore="ButtonStyle" />
+                style="?android:buttonCornerRadius" />
 
         </LinearLayout>
 
@@ -88,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -105,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
+                    android:background="@drawable/rounded_button"
                     android:layout_below="@id/profile_name"
                     android:layout_marginTop="55dp"
                     android:text="@string/logout"

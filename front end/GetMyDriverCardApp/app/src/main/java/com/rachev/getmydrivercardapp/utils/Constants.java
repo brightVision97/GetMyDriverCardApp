@@ -2,6 +2,10 @@ package com.rachev.getmydrivercardapp.utils;
 
 public class Constants
 {
+    public static final String BASE_SERVER_URL = "http://10.169.46.79:8080/api/";
+    
+    public static final String JSON_MEDIA_TYPE = "application/json";
+    
     public static final String IS_OPENED_FROM_DRAWER = "is_origin_drawer";
     
     public static final String USER_LOGGED_IN_TOAST = "User logged in successfully";

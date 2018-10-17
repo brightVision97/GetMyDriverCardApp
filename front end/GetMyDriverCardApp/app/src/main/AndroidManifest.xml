@@ -6,13 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".GetMyDriverCardApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_shortcut_drivercard"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
