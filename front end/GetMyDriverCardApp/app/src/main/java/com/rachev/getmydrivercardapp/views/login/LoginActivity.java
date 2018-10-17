@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SmartLogin mSmartLogin;
     private AlertDialog mAlertDialog;
     private static String mEmailAddress;
+    private String mBackgroundFilename;
     private UsersService mUsersService;
     private SchedulerProvider mSchedulerProvider;
     
@@ -119,14 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginSuccess(SmartUser user)
     {
-        try
-        {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e)
-        {
-            showToast(e.getMessage());
-        }
+        hideKeyboard();
         
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
             createUser(getSocialUserDTO(user));
@@ -148,6 +142,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             userDTO.setLoginType(Constants.LOGIN_TYPE_FACEBOOK);
         
         return userDTO;
+    }
+    
+    private void hideKeyboard()
+    {
+        try
+        {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e)
+        {
+            showToast(e.getMessage());
+        }
     }
     
     private void setProfileData(SmartUser user)
@@ -276,6 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 
                 if (!mAlertDialog.isShowing())
                 {
+                    hideKeyboard();
                     mSmartLogin = SmartLoginFactory.build(LoginType.CustomSignup);
                     mSmartLogin.signup(mSmartLoginConfig);
                 }

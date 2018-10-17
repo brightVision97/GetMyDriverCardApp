@@ -18,7 +18,7 @@ public class GetMyDriverCardApplication extends Application
     private static SchedulerProvider mSchedulerProvider;
     private static HttpRequester mHttpRequester;
     private static JsonParser<UserDTO> mJsonParser;
-    private static Repository mRepository;
+    private static Repository<UserDTO> mRepository;
     private static UsersService mUsersService;
     
     public static SchedulerProvider getSchedulerProvider()
@@ -45,7 +45,7 @@ public class GetMyDriverCardApplication extends Application
         return mJsonParser;
     }
     
-    public static Repository getUsersRepository()
+    public static Repository<UserDTO> getUsersRepository()
     {
         if (mRepository == null)
             mRepository = new HttpRepository();
