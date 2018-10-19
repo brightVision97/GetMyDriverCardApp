@@ -36,6 +36,12 @@ dependencies {
 
     implementation 'codelight.studios:android-smart-login:1.2'
 
+    implementation 'com.otaliastudios:cameraview:1.6.0'
+
+    implementation 'com.kyanogen.signatureview:signature-view:1.2'
+
+    implementation 'com.karumi:dexter:5.0.0'
+
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 
     implementation 'com.google.code.gson:gson:2.8.5'

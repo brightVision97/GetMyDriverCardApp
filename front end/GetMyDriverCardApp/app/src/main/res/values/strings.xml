@@ -12,4 +12,6 @@
     <string name="signup">Signup</string>
     <string name="confirm_password">Confirm password</string>
     <string name="cancel">Cancel</string>
+    <string name="action_download">Download</string>
+    <string name="action_clear">Clear</string>
 </resources>
