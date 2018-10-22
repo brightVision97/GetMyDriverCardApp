@@ -2,11 +2,12 @@ package com.rachev.getmydrivercardbackend;
 
 import com.rachev.getmydrivercardbackend.models.UserDTO;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(scanBasePackages = "com.rachev.getmydrivercardbackend.repositories")
+@SpringBootApplication
 public class GetmydrivercardbackendApplication {
 
     public static void main(String[] args) {
@@ -15,11 +16,10 @@ public class GetmydrivercardbackendApplication {
 
     @Bean
     public SessionFactory sessionFactory() {
-        return new org.hibernate.cfg.Configuration()
-                .configure("hibarnate.cfg.xml")
+        return new Configuration()
+                .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(UserDTO.class)
                 .buildSessionFactory();
-
     }
 }
 

@@ -18,13 +18,11 @@ public class UserApiController {
         this.getMyDriverCardService = getMyDriverCardService;
     }
 
-
     @GetMapping
     public List<UserDTO> getAllUsers() {
         return getMyDriverCardService.getAllUsers();
     }
-
-
+    
     @PostMapping("/new")
     public void createUser(@RequestBody UserDTO userDTO) {
          getMyDriverCardService.createUser(userDTO);
