@@ -1,6 +1,7 @@
 package com.rachev.getmydrivercardbackend.repositories;
 
-import com.rachev.getmydrivercardbackend.models.User;
+
+import com.rachev.getmydrivercardbackend.models.UserDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class SqlUserRepository implements UsersRepository {
 
 
     @Override
-    public void create(User user) {
+    public void create(UserDTO user) {
         try (
                 Session session = sessionFactory.openSession();
         ) {
@@ -30,20 +31,19 @@ public class SqlUserRepository implements UsersRepository {
 
 
     @Override
-    public List<User> getAll() {
-        List<User> result = new ArrayList<>();
+    public List<UserDTO> getAll() {
+        List<UserDTO> result = new ArrayList<>();
         try (
                 Session session = sessionFactory.openSession();
         ) {
             session.beginTransaction();
-            result = session.createQuery("from User ").list();
+            result = session.createQuery("from UserDTO").list();
             session.getTransaction().commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
         return result;
-
 
     }
 }

@@ -1,14 +1,12 @@
 package com.rachev.getmydrivercardbackend.repositories;
 
-import com.rachev.getmydrivercardbackend.models.User;
-
+import com.rachev.getmydrivercardbackend.models.UserDTO;
 import java.util.List;
 
 
 public interface UsersRepository {
-    void create(User user);
+    void create(UserDTO user);
 
-    List<User> getAll();
-
+    List<UserDTO> getAll();
 
 }

@@ -2,12 +2,30 @@ package com.rachev.getmydrivercardapp.utils;
 
 public class Constants
 {
+<<<<<<< HEAD
     public static final String BASE_SERVER_URL = "http://192.168.0.104/api/";
+=======
+    public static final String BASE_SERVER_URL = "http://192.168.0.104:8080/api/";
+>>>>>>> 8ad4dfe2452bab0890578893b04fa79f25238d47
     
     public static final String JSON_MEDIA_TYPE = "application/json";
     
     public static final String IS_OPENED_FROM_DRAWER = "is_origin_drawer";
     
+    public static final String LOGIN_TYPE_GOOGLE = "google";
+    public static final String LOGIN_TYPE_FACEBOOK = "facebook";
+    
+    public static final String USER_ROLE = "user";
+    public static final String LOGIN_TYPE_CUSTOM = "custom";
+    
+    public static final String EMPTY_STRING = "";
+    
+    public static final String WRONG_EMAIL_OR_PASSWORD_TOAST = "Wrong email or password";
+    public static final String PASSWORDS_NO_MATCH_TOAST = "Passwords don't match";
+    
+    public static final String NOT_ALL_FIELDS_FILLED_TOAST = "Please fill all fields";
+    
+    public static final String USER_SIGNED_UP_TOAST = "User signup successfull";
     public static final String USER_LOGGED_IN_TOAST = "User logged in successfully";
     public static final String USER_LOGGED_OUT_TOAST = "User logged out successfully";
     

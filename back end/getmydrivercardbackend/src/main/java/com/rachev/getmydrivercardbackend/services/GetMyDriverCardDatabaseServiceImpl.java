@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.services;
 
-import com.rachev.getmydrivercardbackend.models.User;
+import com.rachev.getmydrivercardbackend.models.UserDTO;
 import com.rachev.getmydrivercardbackend.repositories.UsersRepository;
 import com.rachev.getmydrivercardbackend.services.base.GetMyDriverCardService;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,12 +21,13 @@ public class GetMyDriverCardDatabaseServiceImpl implements GetMyDriverCardServic
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return usersRepository.getAll();
     }
 
     @Override
-    public void createUser(User user) {
-     usersRepository.create(user);
+    public void createUser(UserDTO userDTO) {
+          usersRepository.create(userDTO);
+
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SmartLogin mSmartLogin;
     private AlertDialog mAlertDialog;
     private static String mEmailAddress;
+    private String mBackgroundFilename;
     private UsersService mUsersService;
     private SchedulerProvider mSchedulerProvider;
     
@@ -118,6 +120,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginSuccess(SmartUser user)
     {
+        hideKeyboard();
+        
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
             createUser(getSocialUserDTO(user));
         
@@ -133,11 +137,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         UserDTO userDTO = new UserDTO(user.getUserId());
         
         if (user instanceof SmartGoogleUser)
-            userDTO.setLoginType("google");
+            userDTO.setLoginType(Constants.LOGIN_TYPE_GOOGLE);
         else
-            userDTO.setLoginType("facebook");
+            userDTO.setLoginType(Constants.LOGIN_TYPE_FACEBOOK);
         
         return userDTO;
+    }
+    
+    private void hideKeyboard()
+    {
+        try
+        {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e)
+        {
+            showToast(e.getMessage());
+        }
     }
     
     private void setProfileData(SmartUser user)
@@ -147,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         
         if (user instanceof SmartGoogleUser)
         {
-            name = user.getEmail();
+            name = ((SmartGoogleUser) user).getDisplayName();
             profilePicUrl = ((SmartGoogleUser) user).getPhotoUrl();
         } else if (user instanceof SmartFacebookUser)
         {
@@ -209,6 +225,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String password = mCustomLoginPassword.getText().toString();
                 
                 searchUser(email, password);
+                try
+                {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
                 
                 if (mEmailAddress != null)
                 {
@@ -217,7 +240,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else
                 {
                     if (!email.isEmpty() && !password.isEmpty())
-                        showToast("Wrong username or password");
+                        showToast(Constants.WRONG_EMAIL_OR_PASSWORD_TOAST);
                 }
             }
             break;
@@ -230,10 +253,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         R.layout.dialog_user_signup,
                         null);
                 
-                final EditText mEmail = mView.findViewById(R.id.tv_email);
-                final EditText mPassword = mView.findViewById(R.id.tv_password);
-                final EditText mConfirmPassword = mView.findViewById(R.id.tv_confirm_password);
+                final EditText mEmail = mView.findViewById(R.id.et_email);
+                final EditText mPassword = mView.findViewById(R.id.et_password);
+                final EditText mConfirmPassword = mView.findViewById(R.id.et_confirm_password);
                 Button mAddButton = mView.findViewById(R.id.btn_add);
+                Button mCancelButton = mView.findViewById(R.id.btn_cancel);
                 
                 mAddButton.setOnClickListener(v1 ->
                 {
@@ -244,7 +268,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     routePostUserCreationData(email, password, confirmedPassword);
                     
                     mAlertDialog.dismiss();
-                    showToast("User signup successfull");
+                    showToast(Constants.USER_SIGNED_UP_TOAST);
+                });
+                
+                mCancelButton.setOnClickListener(v2 ->
+                {
+                    mAlertDialog.dismiss();
                 });
                 
                 mBuilder.setView(mView);
@@ -253,6 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 
                 if (!mAlertDialog.isShowing())
                 {
+                    hideKeyboard();
                     mSmartLogin = SmartLoginFactory.build(LoginType.CustomSignup);
                     mSmartLogin.signup(mSmartLoginConfig);
                 }
@@ -314,13 +344,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         if (!password.equals(confirmedPassword))
         {
-            showToast("Passwords don't match");
+            showToast(Constants.PASSWORDS_NO_MATCH_TOAST);
             return;
         }
         
         if (email.isEmpty() || password.isEmpty())
         {
-            showToast("Please fill all fields");
+            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST);
             return;
         }
         
@@ -331,7 +361,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         if (email.isEmpty() || password.isEmpty())
         {
-            showToast("Please fill both fields");
+            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST);
             return;
         }
         
@@ -374,8 +404,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mGoogleLoginButton.setVisibility(View.GONE);
         } else
         {
-            mCustomLoginEmail.setText("", TextView.BufferType.NORMAL);
-            mCustomLoginPassword.setText("", TextView.BufferType.NORMAL);
+            mCustomLoginEmail.setText(Constants.EMPTY_STRING, TextView.BufferType.NORMAL);
+            mCustomLoginPassword.setText(Constants.EMPTY_STRING, TextView.BufferType.NORMAL);
             mProfileSection.setVisibility(View.GONE);
             mCustomLoginEmail.setVisibility(View.VISIBLE);
             mCustomLoginPassword.setVisibility(View.VISIBLE);

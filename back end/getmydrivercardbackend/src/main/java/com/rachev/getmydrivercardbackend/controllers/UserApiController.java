@@ -1,7 +1,6 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
-import com.rachev.getmydrivercardbackend.models.User;
-import com.rachev.getmydrivercardbackend.repositories.UsersRepository;
+import com.rachev.getmydrivercardbackend.models.UserDTO;
 import com.rachev.getmydrivercardbackend.services.base.GetMyDriverCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +20,13 @@ public class UserApiController {
 
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return getMyDriverCardService.getAllUsers();
     }
 
+
     @PostMapping("/new")
-    public void createUser(@RequestBody User user) {
-         getMyDriverCardService.createUser(user);
+    public void createUser(@RequestBody UserDTO userDTO) {
+         getMyDriverCardService.createUser(userDTO);
     }
 }

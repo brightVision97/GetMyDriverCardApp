@@ -8,8 +8,8 @@ import com.rachev.getmydrivercardapp.http.base.HttpRequester;
 import com.rachev.getmydrivercardapp.models.UserDTO;
 import com.rachev.getmydrivercardapp.parsers.GsonJsonParser;
 import com.rachev.getmydrivercardapp.parsers.base.JsonParser;
-import com.rachev.getmydrivercardapp.repositories.HttpUsersRepository;
-import com.rachev.getmydrivercardapp.repositories.base.UsersRepository;
+import com.rachev.getmydrivercardapp.repositories.HttpRepository;
+import com.rachev.getmydrivercardapp.repositories.base.Repository;
 import com.rachev.getmydrivercardapp.services.HttpUsersService;
 import com.rachev.getmydrivercardapp.services.base.UsersService;
 
@@ -18,7 +18,7 @@ public class GetMyDriverCardApplication extends Application
     private static SchedulerProvider mSchedulerProvider;
     private static HttpRequester mHttpRequester;
     private static JsonParser<UserDTO> mJsonParser;
-    private static UsersRepository mUsersRepository;
+    private static Repository<UserDTO> mRepository;
     private static UsersService mUsersService;
     
     public static SchedulerProvider getSchedulerProvider()
@@ -45,12 +45,12 @@ public class GetMyDriverCardApplication extends Application
         return mJsonParser;
     }
     
-    public static UsersRepository getUsersRepository()
+    public static Repository<UserDTO> getUsersRepository()
     {
-        if (mUsersRepository == null)
-            mUsersRepository = new HttpUsersRepository();
+        if (mRepository == null)
+            mRepository = new HttpRepository();
         
-        return mUsersRepository;
+        return mRepository;
     }
     
     public static UsersService getUsersService()
