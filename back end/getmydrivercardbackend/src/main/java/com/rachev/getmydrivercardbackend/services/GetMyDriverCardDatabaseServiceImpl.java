@@ -3,8 +3,10 @@ package com.rachev.getmydrivercardbackend.services;
 import com.rachev.getmydrivercardbackend.models.User;
 import com.rachev.getmydrivercardbackend.repositories.UsersRepository;
 import com.rachev.getmydrivercardbackend.services.base.GetMyDriverCardService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.*;
 
 import java.util.List;
 
@@ -20,11 +22,11 @@ public class GetMyDriverCardDatabaseServiceImpl implements GetMyDriverCardServic
 
     @Override
     public List<User> getAllUsers() {
-        return usersRepository.findAll();
+        return usersRepository.getAll();
     }
 
     @Override
-    public User createUser(User user) {
-        return usersRepository.save(user);
+    public void createUser(User user) {
+     usersRepository.create(user);
     }
 }

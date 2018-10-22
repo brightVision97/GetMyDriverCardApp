@@ -1,13 +1,14 @@
 package com.rachev.getmydrivercardbackend.models;
 
-import jdk.internal.jline.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 @Entity
 @Table(name = "users")
@@ -22,7 +23,7 @@ public class User {
     @Column(name = "id", unique = true)
     private int id;
 
-    @NotNull
+    @Nullable
     @Column(name = "login_type", unique = true)
     private String loginType;
 

@@ -305,6 +305,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
                 .doOnError(e -> showToast(e.getMessage()))
+                .doOnComplete(() -> onClick(mCustomLoginButton))
                 .subscribe();
     }
     
@@ -355,7 +356,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
-                .doOnError(e -> showToast(e.getMessage()))
                 .subscribe();
     }
     

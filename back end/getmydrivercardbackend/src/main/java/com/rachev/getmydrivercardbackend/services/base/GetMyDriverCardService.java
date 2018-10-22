@@ -7,5 +7,5 @@ import java.util.List;
 public interface GetMyDriverCardService {
     List<User> getAllUsers();
 
-    User createUser(User user);
+    void createUser(User user);
 }
