@@ -12,6 +12,7 @@ import com.rachev.getmydrivercardapp.repositories.HttpRepository;
 import com.rachev.getmydrivercardapp.repositories.base.Repository;
 import com.rachev.getmydrivercardapp.services.HttpUsersService;
 import com.rachev.getmydrivercardapp.services.base.UsersService;
+import com.rachev.getmydrivercardapp.utils.Constants;
 
 public class GetMyDriverCardApplication extends Application
 {
@@ -32,7 +33,7 @@ public class GetMyDriverCardApplication extends Application
     public static HttpRequester getHttpRequester()
     {
         if (mHttpRequester == null)
-            mHttpRequester = new OkHttpHttpRequester();
+            mHttpRequester = OkHttpHttpRequester.getInstance();
         
         return mHttpRequester;
     }
@@ -48,7 +49,8 @@ public class GetMyDriverCardApplication extends Application
     public static Repository<UserDTO> getUsersRepository()
     {
         if (mRepository == null)
-            mRepository = new HttpRepository();
+            mRepository = new HttpRepository(Constants.BASE_SERVER_URL + "/users",
+                    getHttpRequester(), getJsonParser());
         
         return mRepository;
     }
@@ -56,7 +58,7 @@ public class GetMyDriverCardApplication extends Application
     public static UsersService getUsersService()
     {
         if (mUsersService == null)
-            mUsersService = new HttpUsersService();
+            mUsersService = new HttpUsersService(getUsersRepository());
         
         return mUsersService;
     }

@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String mBackgroundFilename;
     private UsersService mUsersService;
     private SchedulerProvider mSchedulerProvider;
+    private static long mBackPressedTime;
     
     @BindView(R.id.email_edittext)
     EditText mCustomLoginEmail;
@@ -113,7 +114,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mCurrentUser != null)
         {
             setProfileData(mCurrentUser);
-            //navigateToHome();
+            navigateToHome();
+        }
+    }
+    
+    @Override
+    public void onBackPressed()
+    {
+        if (mBackPressedTime + Constants.BACK_PRESS_PERIOD > System.currentTimeMillis())
+            super.onBackPressed();
+        else
+        {
+            showToast("Press once again to exit", false);
+            mBackPressedTime = System.currentTimeMillis();
         }
     }
     
@@ -127,9 +140,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         
         setProfileData(user);
         updateUi();
-        //navigateToHome();
+        navigateToHome();
         
-        showToast(Constants.USER_LOGGED_IN_TOAST);
+        showToast(Constants.USER_LOGGED_IN_TOAST, false);
     }
     
     private UserDTO getSocialUserDTO(SmartUser user)
@@ -152,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         } catch (Exception e)
         {
-            showToast(e.getMessage());
+            showToast(e.getMessage(), true);
         }
     }
     
@@ -185,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginFailure(SmartLoginException e)
     {
-        showToast(e.getMessage());
+        showToast(e.getMessage(), true);
     }
     
     @Override
@@ -206,11 +219,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return customUser;
     }
     
-    public void showToast(String message)
+    public void showToast(String message, boolean important)
     {
         Toast.makeText(this,
                 message,
-                Toast.LENGTH_SHORT)
+                important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)
                 .show();
     }
     
@@ -240,7 +253,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else
                 {
                     if (!email.isEmpty() && !password.isEmpty())
-                        showToast(Constants.WRONG_EMAIL_OR_PASSWORD_TOAST);
+                        showToast(Constants.WRONG_EMAIL_OR_PASSWORD_TOAST, true);
                 }
             }
             break;
@@ -268,7 +281,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     routePostUserCreationData(email, password, confirmedPassword);
                     
                     mAlertDialog.dismiss();
-                    showToast(Constants.USER_SIGNED_UP_TOAST);
+                    showToast(Constants.USER_SIGNED_UP_TOAST, false);
                 });
                 
                 mCancelButton.setOnClickListener(v2 ->
@@ -312,10 +325,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (mSmartLogin.logout(getApplicationContext()))
                     {
                         updateUi();
-                        showToast(Constants.USER_LOGGED_OUT_TOAST);
+                        showToast(Constants.USER_LOGGED_OUT_TOAST, false);
                     }
                 }
-                //navigateToHome();
+                navigateToHome();
                 break;
         }
     }
@@ -334,8 +347,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
-                .doOnError(e -> showToast(e.getMessage()))
-                .doOnComplete(() -> onClick(mCustomLoginButton))
+                .doOnError(e -> showToast(e.getMessage(), true))
                 .subscribe();
     }
     
@@ -344,13 +356,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         if (!password.equals(confirmedPassword))
         {
-            showToast(Constants.PASSWORDS_NO_MATCH_TOAST);
+            showToast(Constants.PASSWORDS_NO_MATCH_TOAST, true);
             return;
         }
         
         if (email.isEmpty() || password.isEmpty())
         {
-            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST);
+            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
             return;
         }
         
@@ -361,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         if (email.isEmpty() || password.isEmpty())
         {
-            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST);
+            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
             return;
         }
         
@@ -386,6 +398,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
+                .doOnError(e -> showToast(e.getMessage(), true))
                 .subscribe();
     }
     
@@ -423,19 +436,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         
         mSmartLogin.onActivityResult(requestCode, resultCode, data, mSmartLoginConfig);
     }
-
-//    public void navigateToHome()
-//    {
-//        if (mCurrentUser != null)
-//        {
-//            Intent intent = new Intent(this, PasswordsListActivity.class);
-//            intent.putExtra(Constants.USER_OBJ_EXTRA, getSocialUserObj(mCurrentUser));
-//            startActivity(intent);
-//            finish();
-//        } else
-//        {
-//            startActivity(new Intent(this, LoginActivity.class));
-//            finish();
-//        }
-//    }
+    
+    public void navigateToHome()
+    {
+        if (mCurrentUser != null)
+        {
+        
+        } else
+        {
+        
+        }
+    }
 }

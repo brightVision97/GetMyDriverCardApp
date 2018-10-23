@@ -20,32 +20,26 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-<<<<<<< HEAD
-        <activity
-            android:name=".views.login.LoginActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden">
-
-=======
 
         <activity
             android:name=".views.login.LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
->>>>>>> 8ad4dfe2452bab0890578893b04fa79f25238d47
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".views.camera.CameraActivity"
             android:configChanges="orientation|screenLayout|keyboardHidden"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
+
         <activity android:name=".views.camera.PicturePreviewActivity" />
-        <activity android:name=".views.signature.SignatureActivity"></activity>
+
+        <activity android:name=".views.signature.SignatureActivity" />
+
     </application>
 
 </manifest>

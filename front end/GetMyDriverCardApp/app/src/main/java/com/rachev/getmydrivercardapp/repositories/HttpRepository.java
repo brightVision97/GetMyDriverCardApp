@@ -1,10 +1,8 @@
 package com.rachev.getmydrivercardapp.repositories;
 
-import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.http.base.HttpRequester;
 import com.rachev.getmydrivercardapp.parsers.base.JsonParser;
 import com.rachev.getmydrivercardapp.repositories.base.Repository;
-import com.rachev.getmydrivercardapp.utils.Constants;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,11 +13,11 @@ public class HttpRepository<T> implements Repository<T>
     private final String mServerUrl;
     private final JsonParser<T> mJsonParser;
     
-    public HttpRepository()
+    public HttpRepository(String serverUrl, HttpRequester httpRequester, JsonParser<T> jsonParser)
     {
-        mServerUrl = Constants.BASE_SERVER_URL + "/users";
-        mHttpRequester = GetMyDriverCardApplication.getHttpRequester();
-        mJsonParser = (JsonParser<T>) GetMyDriverCardApplication.getJsonParser();
+        mServerUrl = serverUrl;
+        mHttpRequester = httpRequester;
+        mJsonParser = jsonParser;
     }
     
     @Override

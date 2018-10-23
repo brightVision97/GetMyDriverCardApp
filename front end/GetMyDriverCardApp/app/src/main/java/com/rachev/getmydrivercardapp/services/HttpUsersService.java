@@ -1,6 +1,5 @@
 package com.rachev.getmydrivercardapp.services;
 
-import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.models.UserDTO;
 import com.rachev.getmydrivercardapp.repositories.base.Repository;
 import com.rachev.getmydrivercardapp.services.base.UsersService;
@@ -11,9 +10,9 @@ public class HttpUsersService implements UsersService
 {
     private final Repository<UserDTO> mRepository;
     
-    public HttpUsersService()
+    public HttpUsersService(Repository<UserDTO> repository)
     {
-        mRepository = GetMyDriverCardApplication.getUsersRepository();
+        mRepository = repository;
     }
     
     @Override

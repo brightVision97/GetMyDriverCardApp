@@ -11,8 +11,13 @@ import java.io.IOException;
 
 public class OkHttpHttpRequester implements HttpRequester
 {
-    public OkHttpHttpRequester()
+    private OkHttpHttpRequester()
     {
+    }
+    
+    public static OkHttpHttpRequester getInstance()
+    {
+        return new OkHttpHttpRequester();
     }
     
     @Override

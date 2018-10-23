@@ -54,7 +54,7 @@ public class SignatureActivity extends AppCompatActivity
         {
             case R.id.action_clear:
                 mSignatureView.clearCanvas();
-                showToast("Canvas cleared");
+                showToast("Canvas cleared", false);
                 return true;
             case R.id.action_download:
                 File file = new File(Environment.getExternalStoragePublicDirectory(
@@ -70,21 +70,22 @@ public class SignatureActivity extends AppCompatActivity
                         throw new FileNotFoundException();
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    showToast(e.getMessage(), true);
                 } finally
                 {
                     if (bitmap != null)
-                        showToast("Image saved successfully at " + file.getPath());
+                        showToast("Image saved successfully at " + file.getPath(),
+                                false);
                 }
         }
         return true;
     }
     
-    private void showToast(String message)
+    private void showToast(String message, boolean important)
     {
         Toast.makeText(getApplicationContext(),
                 message,
-                Toast.LENGTH_SHORT)
+                important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)
                 .show();
     }
     
@@ -97,13 +98,12 @@ public class SignatureActivity extends AppCompatActivity
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response)
                     {
-                        showToast("Permission granted");
                     }
                     
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response)
                     {
-                        showToast("Permission denied");
+                        showToast("Permission denied", true);
                     }
                     
                     @Override

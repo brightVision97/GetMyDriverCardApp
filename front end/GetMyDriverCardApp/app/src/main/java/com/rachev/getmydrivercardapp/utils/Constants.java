@@ -2,11 +2,9 @@ package com.rachev.getmydrivercardapp.utils;
 
 public class Constants
 {
-<<<<<<< HEAD
-    public static final String BASE_SERVER_URL = "http://192.168.0.104/api/";
-=======
-    public static final String BASE_SERVER_URL = "http://192.168.0.104:8080/api/";
->>>>>>> 8ad4dfe2452bab0890578893b04fa79f25238d47
+    public static final String BASE_SERVER_URL = "http://192.168.0.103:8080/api/";
+    
+    public static final int BACK_PRESS_PERIOD = 2000;
     
     public static final String JSON_MEDIA_TYPE = "application/json";
     
