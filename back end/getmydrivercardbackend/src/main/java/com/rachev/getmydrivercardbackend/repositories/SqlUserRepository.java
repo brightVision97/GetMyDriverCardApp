@@ -3,6 +3,7 @@ package com.rachev.getmydrivercardbackend.repositories;
 import com.rachev.getmydrivercardbackend.models.UserDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,9 +24,9 @@ public class SqlUserRepository implements UsersRepository {
     @Override
     public void create(UserDTO user) {
         try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
             session.save(user);
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);

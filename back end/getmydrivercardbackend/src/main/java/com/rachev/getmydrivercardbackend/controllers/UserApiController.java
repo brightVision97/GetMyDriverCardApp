@@ -23,7 +23,7 @@ public class UserApiController {
         return getMyDriverCardService.getAllUsers();
     }
     
-    @PostMapping("/new")
+    @PostMapping
     public void createUser(@RequestBody UserDTO userDTO) {
          getMyDriverCardService.createUser(userDTO);
     }

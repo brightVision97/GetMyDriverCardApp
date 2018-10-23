@@ -14,11 +14,11 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UserDTO {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private int id;
-
 
     @Nullable
     @Column(name = "login_type", unique = true)
