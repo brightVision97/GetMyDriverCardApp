@@ -12,15 +12,14 @@ import java.util.List;
 
 @Repository
 public class SqlUserRepository implements UsersRepository {
-    
+
     private final SessionFactory sessionFactory;
-    
+
     @Autowired
-    public SqlUserRepository(SessionFactory sessionFactory)
-    {
+    public SqlUserRepository(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-    
+
     @Override
     public void create(UserDTO user) {
         try (Session session = sessionFactory.openSession()) {
@@ -32,7 +31,25 @@ public class SqlUserRepository implements UsersRepository {
             throw new RuntimeException(e);
         }
     }
-    
+
+
+    @Override
+    public UserDTO getByEmail(String email) {
+        UserDTO result = null;
+        try (
+                Session session = sessionFactory.openSession();
+        ) {
+            session.beginTransaction();
+            result = session.get(UserDTO.class, email);
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
     @Override
     public List<UserDTO> getAll() {
         List<UserDTO> result = new ArrayList<>();

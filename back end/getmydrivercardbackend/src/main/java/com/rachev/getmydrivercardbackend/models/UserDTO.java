@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UserDTO {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
@@ -44,4 +45,5 @@ public class UserDTO {
         this.email = email;
         this.password = password;
     }
+
 }

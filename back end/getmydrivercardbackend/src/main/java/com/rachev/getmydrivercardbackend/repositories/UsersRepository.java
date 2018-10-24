@@ -7,5 +7,7 @@ public interface UsersRepository {
     
     void create(UserDTO user);
 
+    UserDTO getByEmail(String email);
+
     List<UserDTO> getAll();
 }

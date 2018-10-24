@@ -26,8 +26,14 @@ public class GetMyDriverCardDatabaseServiceImpl implements GetMyDriverCardServic
     }
 
     @Override
+    public UserDTO getByEmail(String email) {
+        return usersRepository.getByEmail(email);
+    }
+
+
+    @Override
     public void createUser(UserDTO userDTO) {
-          usersRepository.create(userDTO);
+        usersRepository.create(userDTO);
 
     }
 }

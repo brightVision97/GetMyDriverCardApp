@@ -22,9 +22,16 @@ public class UserApiController {
     public List<UserDTO> getAllUsers() {
         return getMyDriverCardService.getAllUsers();
     }
-    
+
+    @GetMapping
+    public UserDTO getByEmail(@PathVariable String email) {
+        return getMyDriverCardService.getByEmail(email);
+    }
+
     @PostMapping
     public void createUser(@RequestBody UserDTO userDTO) {
-         getMyDriverCardService.createUser(userDTO);
+        getMyDriverCardService.createUser(userDTO);
     }
+
+
 }

@@ -7,5 +7,7 @@ import java.util.List;
 public interface GetMyDriverCardService {
     List<UserDTO> getAllUsers();
 
+    UserDTO getByEmail(String email);
+
     void createUser(UserDTO userDTO);
 }
