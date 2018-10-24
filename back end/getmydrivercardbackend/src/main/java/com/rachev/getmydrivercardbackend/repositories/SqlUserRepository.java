@@ -40,7 +40,9 @@ public class SqlUserRepository implements UsersRepository {
                 Session session = sessionFactory.openSession();
         ) {
             session.beginTransaction();
-            result = session.get(UserDTO.class, email);
+            result = (UserDTO) session.createQuery("from UserDTO where email = :email")
+                    .setParameter("email",email )
+                    .getSingleResult();
             session.getTransaction().commit();
 
         } catch (Exception e) {

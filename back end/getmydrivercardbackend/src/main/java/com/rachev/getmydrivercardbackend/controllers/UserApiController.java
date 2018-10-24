@@ -23,7 +23,7 @@ public class UserApiController {
         return getMyDriverCardService.getAllUsers();
     }
 
-    @GetMapping
+    @GetMapping("/{email}")
     public UserDTO getByEmail(@PathVariable String email) {
         return getMyDriverCardService.getByEmail(email);
     }
