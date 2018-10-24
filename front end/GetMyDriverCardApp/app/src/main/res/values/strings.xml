@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">GetMyDriverCardApp</string>
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="facebook_app_id">240792566614726</string>
+    <string name="fb_login_protocol_scheme">fb240792566614726</string>
+    <string name="logout">Logout</string>
+    <string name="sign_in_facebook">Sign in Facebook</string>
+    <string name="sign_in_google">Sign in Google</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signup">Signup</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="cancel">Cancel</string>
+    <string name="action_download">Download</string>
+    <string name="action_clear">Clear</string>
 </resources>
