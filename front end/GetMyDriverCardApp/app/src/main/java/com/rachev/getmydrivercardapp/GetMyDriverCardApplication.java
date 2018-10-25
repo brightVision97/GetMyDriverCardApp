@@ -49,7 +49,8 @@ public class GetMyDriverCardApplication extends Application
     public static Repository<UserDTO> getUsersRepository()
     {
         if (mRepository == null)
-            mRepository = new HttpRepository(Constants.BASE_SERVER_URL + "/users",
+            mRepository = new HttpRepository(
+                    Constants.BASE_SERVER_URL + Constants.USERS_URL_SUFFIX,
                     getHttpRequester(), getJsonParser());
         
         return mRepository;

@@ -2,10 +2,7 @@ package com.rachev.getmydrivercardapp.http;
 
 import com.rachev.getmydrivercardapp.http.base.HttpRequester;
 import com.rachev.getmydrivercardapp.utils.Constants;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 
 import java.io.IOException;
 
@@ -28,9 +25,8 @@ public class OkHttpHttpRequester implements HttpRequester
                 .url(url)
                 .build();
         
-        OkHttpClient client = new OkHttpClient();
-        
-        return client.newCall(request)
+        return new OkHttpClient()
+                .newCall(request)
                 .execute()
                 .body()
                 .string();
@@ -48,11 +44,12 @@ public class OkHttpHttpRequester implements HttpRequester
                 .url(url)
                 .build();
         
-        OkHttpClient client = new OkHttpClient();
+        Response response = new OkHttpClient()
+                .newCall(request)
+                .execute();
         
-        return client.newCall(request)
-                .execute()
-                .body()
-                .string();
+        return response.code() == Constants.HTTP_STATUS_OK
+                ? response.body().string()
+                : null;
     }
 }

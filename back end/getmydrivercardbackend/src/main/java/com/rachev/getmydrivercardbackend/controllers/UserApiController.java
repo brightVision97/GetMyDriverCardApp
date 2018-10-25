@@ -1,7 +1,7 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
 import com.rachev.getmydrivercardbackend.models.UserDTO;
-import com.rachev.getmydrivercardbackend.services.base.GetMyDriverCardService;
+import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,29 +9,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserApiController {
-
-    private final GetMyDriverCardService getMyDriverCardService;
-
+public class UserApiController
+{
+    private final UsersService usersService;
+    
     @Autowired
-    public UserApiController(GetMyDriverCardService getMyDriverCardService) {
-        this.getMyDriverCardService = getMyDriverCardService;
+    public UserApiController(UsersService usersService)
+    {
+        this.usersService = usersService;
     }
-
+    
     @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return getMyDriverCardService.getAllUsers();
+    public List<UserDTO> getAllUsers()
+    {
+        return usersService.getAllUsers();
     }
-
-    @GetMapping("/{email}")
-    public UserDTO getByEmail(@PathVariable String email) {
-        return getMyDriverCardService.getByEmail(email);
+    
+    @GetMapping("/{username}")
+    public UserDTO getByUsername(@PathVariable String username)
+    {
+        return usersService.getByUsername(username);
     }
-
+    
     @PostMapping
-    public void createUser(@RequestBody UserDTO userDTO) {
-        getMyDriverCardService.createUser(userDTO);
+    public void createUser(@RequestBody UserDTO userDTO)
+    {
+        usersService.createUser(userDTO);
     }
-
-
 }

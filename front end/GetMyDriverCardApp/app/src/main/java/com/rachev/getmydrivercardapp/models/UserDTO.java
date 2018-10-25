@@ -7,39 +7,21 @@ import java.io.Serializable;
 public class UserDTO implements Serializable
 {
     public int id;
-    public String loginType;
-    public String email;
+    public String username;
     public String password;
-    public String socialId;
+    public String facebookId;
+    public String googleId;
     public String role;
     
     public UserDTO()
     {
     }
     
-    public UserDTO(String socialId)
+    public UserDTO(String username, String password)
     {
-        setSocialId(socialId);
-        setRole(Constants.USER_ROLE);
-        setEmail(null);
-        setPassword(null);
-    }
-    
-    public UserDTO(String email, String password)
-    {
-        setEmail(email);
+        setUsername(username);
         setPassword(password);
-        setLoginType(Constants.LOGIN_TYPE_CUSTOM);
         setRole(Constants.USER_ROLE);
-        setSocialId(null);
-    }
-    
-    @Override
-    public boolean equals(Object obj)
-    {
-        return socialId != null
-                ? getSocialId().equals(((UserDTO) obj).getSocialId())
-                : getEmail().equals(((UserDTO) obj).getEmail());
     }
     
     public int getId()
@@ -52,24 +34,14 @@ public class UserDTO implements Serializable
         this.id = id;
     }
     
-    public String getLoginType()
+    public String getUsername()
     {
-        return loginType;
+        return username;
     }
     
-    public void setLoginType(String loginType)
+    public void setUsername(String username)
     {
-        this.loginType = loginType;
-    }
-    
-    public String getEmail()
-    {
-        return email;
-    }
-    
-    public void setEmail(String email)
-    {
-        this.email = email;
+        this.username = username;
     }
     
     public String getPassword()
@@ -82,14 +54,24 @@ public class UserDTO implements Serializable
         this.password = password;
     }
     
-    public String getSocialId()
+    public String getFacebookId()
     {
-        return socialId;
+        return facebookId;
     }
     
-    public void setSocialId(String socialId)
+    public void setFacebookId(String facebookId)
     {
-        this.socialId = socialId;
+        this.facebookId = facebookId;
+    }
+    
+    public String getGoogleId()
+    {
+        return googleId;
+    }
+    
+    public void setGoogleId(String googleId)
+    {
+        this.googleId = googleId;
     }
     
     public String getRole()
