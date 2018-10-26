@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.services.base;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
 
 import java.util.List;
 

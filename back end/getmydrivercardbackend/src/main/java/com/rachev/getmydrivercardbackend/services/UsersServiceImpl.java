@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.services;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
 import com.rachev.getmydrivercardbackend.repositories.base.UsersRepository;
 import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.stereotype.Service;

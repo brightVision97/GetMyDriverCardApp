@@ -1,7 +1,7 @@
-package com.rachev.getmydrivercardbackend.models;
+package com.rachev.getmydrivercardbackend.models.dtos;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 public class UserDTO
@@ -22,11 +22,11 @@ public class UserDTO
     
     @Nullable
     @Column(name = "username", unique = true)
-    private String username;
+    private final String username;
     
     @Nullable
     @Column(name = "password")
-    private String password;
+    private final String password;
     
     @Nullable
     @Column(name = "facebook_id")
@@ -40,9 +40,9 @@ public class UserDTO
     @Column(name = "role")
     private String role;
     
-    public UserDTO(String username, String password)
+    public UserDTO()
     {
-        this.username = username;
-        this.password = password;
+        username = null;
+        password = null;
     }
 }

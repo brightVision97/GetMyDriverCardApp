@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.repositories;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
 import com.rachev.getmydrivercardbackend.repositories.base.UsersRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,13 +23,13 @@ public class SqlUsersRepository implements UsersRepository
     }
     
     @Override
-    public void create(UserDTO user)
+    public void create(UserDTO userDTO)
     {
-        user.setRole("user");
+        userDTO.setRole("userDTO");
         try (Session session = sessionFactory.openSession())
         {
             Transaction transaction = session.beginTransaction();
-            session.save(user);
+            session.save(userDTO);
             transaction.commit();
         } catch (Exception e)
         {

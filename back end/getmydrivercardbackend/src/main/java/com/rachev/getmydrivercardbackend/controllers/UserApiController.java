@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
 import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

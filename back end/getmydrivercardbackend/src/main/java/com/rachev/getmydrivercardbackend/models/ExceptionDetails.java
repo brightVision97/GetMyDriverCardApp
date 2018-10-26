@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ErrorDetails
+public class ExceptionDetails
 {
     private LocalDateTime timestamp;
     private String message;

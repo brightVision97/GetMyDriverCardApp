@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.repositories.base;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface UsersRepository
     
     UserDTO getByUsername(String username);
     
-    void create(UserDTO user);
+    void create(UserDTO userDTO);
 }

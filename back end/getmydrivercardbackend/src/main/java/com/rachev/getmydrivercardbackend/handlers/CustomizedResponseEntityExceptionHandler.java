@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.handlers;
 
-import com.rachev.getmydrivercardbackend.models.ErrorDetails;
+import com.rachev.getmydrivercardbackend.models.ExceptionDetails;
 import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(HibernateException ex, WebRequest request)
     {
-        ErrorDetails errorDetails = new ErrorDetails(
+        ExceptionDetails exceptionDetails = new ExceptionDetails(
                 LocalDateTime.now(),
                 ex.getMessage(),
                 request.getDescription(false));
