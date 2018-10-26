@@ -18,6 +18,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.kyanogen.signatureview.SignatureView;
 import com.rachev.getmydrivercardapp.R;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,12 +100,19 @@ public class SignatureActivity extends AppCompatActivity
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response)
                     {
+                        Crouton.makeText(SignatureActivity.this,
+                                "Permission denied",
+                                Style.CONFIRM)
+                                .show();
                     }
                     
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response)
                     {
-                        showToast("Permission denied", true);
+                        Crouton.makeText(SignatureActivity.this,
+                                "Permission denied",
+                                Style.ALERT)
+                                .show();
                     }
                     
                     @Override

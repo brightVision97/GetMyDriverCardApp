@@ -12,15 +12,11 @@ import android.widget.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
-import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.R;
-import com.rachev.getmydrivercardapp.async.base.SchedulerProvider;
-import com.rachev.getmydrivercardapp.models.UserDTO;
-import com.rachev.getmydrivercardapp.services.base.UsersService;
-import com.rachev.getmydrivercardapp.utils.BCrypt;
 import com.rachev.getmydrivercardapp.utils.Constants;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
+import de.keyboardsurfer.android.widget.crouton.Configuration;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import studios.codelight.smartloginlibrary.*;
 import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
 import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
@@ -28,7 +24,8 @@ import studios.codelight.smartloginlibrary.users.SmartUser;
 import studios.codelight.smartloginlibrary.util.SmartLoginException;
 
 @SuppressWarnings("ALL")
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, SmartLoginCallbacks
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
+        SmartLoginCallbacks, LoginContracts.View, LoginContracts.Navigator
 {
     //public static final int IDENTIFIER = 160;
     
@@ -36,8 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SmartLoginConfig mSmartLoginConfig;
     private SmartLogin mSmartLogin;
     private AlertDialog mAlertDialog;
-    private UsersService mUsersService;
-    private SchedulerProvider mSchedulerProvider;
+    private LoginContracts.Presenter mPresenter;
     private static long mBackPressedTime;
     private static String mCurrentUsername;
     
@@ -82,8 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mSmartLoginConfig = new SmartLoginConfig(this, this);
         mSmartLoginConfig.setFacebookAppId(getString(R.string.facebook_app_id));
         
-        mUsersService = GetMyDriverCardApplication.getUsersService();
-        mSchedulerProvider = GetMyDriverCardApplication.getSchedulerProvider();
+        setPresenter(new LoginPresenter());
         
         mCustomLoginButton.setOnClickListener(this);
         mCustomSignupButton.setOnClickListener(this);
@@ -99,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         super.onResume();
         
+        mPresenter.subscribe(this);
         mCurrentUser = UserSessionManager.getCurrentUser(this);
         updateUi();
 
@@ -117,13 +113,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
     
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        
+        mPresenter.unsubscribe();
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        
+        Crouton.cancelAllCroutons();
+    }
+    
+    @Override
     public void onBackPressed()
     {
         if (mBackPressedTime + Constants.BACK_PRESS_PERIOD > System.currentTimeMillis())
             super.onBackPressed();
         else
         {
-            showToast(Constants.SECOND_PRESS_POPUP_TOAST, false);
+            showCrouton(Constants.SECOND_PRESS_POPUP_TOAST, Style.INFO, false);
             mBackPressedTime = System.currentTimeMillis();
         }
     }
@@ -132,13 +144,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onLoginSuccess(SmartUser user)
     {
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
-            sendSocialUserToDb(user);
+            mPresenter.prepareAndSendSocialUserDbEntry(user);
         
         setProfileData(user);
         updateUi();
         navigateToHome();
         
-        showToast(Constants.USER_LOGGED_IN_TOAST, false);
+        showCrouton(Constants.USER_LOGGED_IN_TOAST, Style.CONFIRM, false);
     }
     
     private void setProfileData(SmartUser user)
@@ -167,33 +179,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .into(mProfilePictureView);
     }
     
-    private void sendSocialUserToDb(SmartUser user)
-    {
-        UserDTO userToSend = new UserDTO();
-        
-        if (user instanceof SmartGoogleUser)
-        {
-            userToSend.setUsername(user.getEmail());
-            userToSend.setGoogleId(user.getUserId());
-        } else if (user instanceof SmartFacebookUser)
-        {
-            StringBuilder customUsername = new StringBuilder()
-                    .append((((SmartFacebookUser) user)
-                            .getProfileName()
-                            .toLowerCase())
-                            .replace(" ", ""))
-                    .append(user.getUserId().substring(0, 4));
-            userToSend.setUsername(customUsername.toString());
-            userToSend.setFacebookId(user.getUserId());
-        }
-        
-        createUser(userToSend);
-    }
-    
     @Override
     public void onLoginFailure(SmartLoginException e)
     {
-        showToast(e.getMessage(), true);
+        showCrouton(e.getMessage(), Style.ALERT, true);
     }
     
     @Override
@@ -226,12 +215,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     
-    private void showToast(String message, boolean important)
+    @Override
+    public void showCrouton(String message, Style style, boolean important)
     {
         hideKeyboard();
-        Toast.makeText(this,
-                message,
-                important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)
+        Crouton.makeText(this, message, style)
+                .setConfiguration(new Configuration.Builder()
+                        .setDuration(important ? 4000 : 2000)
+                        .build())
                 .show();
     }
     
@@ -245,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String username = mCustomLoginUsername.getText().toString();
                 String password = mCustomLoginPassword.getText().toString();
                 
-                if (isPasswordCorrectIfUserExists(username, password))
+                if (mPresenter.isPasswordCorrectIfUserExists(username, password))
                     mCurrentUsername = username;
                 
                 if (mCurrentUsername != null)
@@ -255,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else
                 {
                     if (!username.isEmpty() && !password.isEmpty())
-                        showToast(Constants.WRONG_USERNAME_OR_PASSWORD_TOAST, true);
+                        showCrouton(Constants.WRONG_USERNAME_OR_PASSWORD_TOAST, Style.ALERT, true);
                 }
             }
             break;
@@ -274,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 
                 mAddButton.setOnClickListener(v1 ->
                 {
-                    routePostUserCreationData(
+                    mPresenter.routePostUserCreationData(
                             mUsername.getText().toString(),
                             mPassword.getText().toString(),
                             mConfirmPassword.getText().toString());
@@ -323,72 +314,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (mSmartLogin.logout(getApplicationContext()))
                     {
                         updateUi();
-                        showToast(Constants.USER_LOGGED_OUT_TOAST, false);
+                        showCrouton(Constants.USER_LOGGED_OUT_TOAST, Style.INFO, false);
                     }
                 }
                 navigateToHome();
                 break;
+            default:
+                break;
         }
-    }
-    
-    private void createUser(UserDTO user)
-    {
-        Observable.create((ObservableOnSubscribe<UserDTO>) emitter ->
-        {
-            try
-            {
-                mUsersService.createUser(user);
-                emitter.onComplete();
-            } catch (Exception e)
-            {
-                emitter.onError(e);
-            }
-        })
-                .subscribeOn(mSchedulerProvider.background())
-                .observeOn(mSchedulerProvider.ui())
-                .subscribe(
-                        msg -> showToast(Constants.USER_SIGNED_UP_TOAST, true),
-                        err -> showToast(err.getMessage(), true));
-    }
-    
-    private void routePostUserCreationData(String username, String password, String confirmedPassword)
-    {
-        if (!password.equals(confirmedPassword))
-        {
-            showToast(Constants.PASSWORDS_NO_MATCH_TOAST, true);
-            return;
-        }
-        
-        if (username.isEmpty() || password.isEmpty())
-        {
-            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
-            return;
-        }
-        
-        createUser(new UserDTO(username.toLowerCase(), BCrypt.hashpw(password, BCrypt.gensalt())));
-    }
-    
-    private boolean isPasswordCorrectIfUserExists(String username, String password)
-    {
-        if (username.isEmpty() || password.isEmpty())
-        {
-            showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
-            return false;
-        }
-        
-        try
-        {
-            UserDTO user = mUsersService.getByUsername(username);
-            if (user != null)
-                if (BCrypt.checkpw(password, user.getPassword()))
-                    return true;
-        } catch (Exception e)
-        {
-            System.err.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        
-        return false;
     }
     
     private void updateUi()
@@ -426,6 +359,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mSmartLogin.onActivityResult(requestCode, resultCode, data, mSmartLoginConfig);
     }
     
+    @Override
+    public void setPresenter(LoginContracts.Presenter presenter)
+    {
+        mPresenter = presenter;
+        mPresenter.subscribe(this);
+    }
+    
+    @Override
     public void navigateToHome()
     {
         if (mCurrentUser != null)
@@ -436,4 +377,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         
         }
     }
+    
 }
