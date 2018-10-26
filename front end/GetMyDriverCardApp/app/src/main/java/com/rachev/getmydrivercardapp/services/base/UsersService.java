@@ -8,5 +8,7 @@ public interface UsersService
 {
     List<UserDTO> getAllUsers() throws Exception;
     
+    UserDTO getByUsername(String username) throws Exception;
+    
     UserDTO createUser(UserDTO user) throws Exception;
 }

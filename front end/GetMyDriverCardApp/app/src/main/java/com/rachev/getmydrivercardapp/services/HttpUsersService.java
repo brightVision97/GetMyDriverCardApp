@@ -22,6 +22,12 @@ public class HttpUsersService implements UsersService
     }
     
     @Override
+    public UserDTO getByUsername(String username) throws Exception
+    {
+        return mRepository.getByUsername(username);
+    }
+    
+    @Override
     public UserDTO createUser(UserDTO user) throws Exception
     {
         return mRepository.add(user);

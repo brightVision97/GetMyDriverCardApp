@@ -8,14 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class GetmydrivercardbackendApplication {
-
-    public static void main(String[] args) {
+public class GetmydrivercardbackendApplication
+{
+    public static void main(String[] args)
+    {
         SpringApplication.run(GetmydrivercardbackendApplication.class, args);
     }
-
+    
     @Bean
-    public SessionFactory sessionFactory() {
+    public SessionFactory sessionFactory()
+    {
         return new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(UserDTO.class)

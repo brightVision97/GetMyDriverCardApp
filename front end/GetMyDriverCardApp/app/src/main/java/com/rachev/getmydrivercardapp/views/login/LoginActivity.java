@@ -21,7 +21,6 @@ import com.rachev.getmydrivercardapp.utils.BCrypt;
 import com.rachev.getmydrivercardapp.utils.Constants;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.disposables.Disposable;
 import studios.codelight.smartloginlibrary.*;
 import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
 import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
@@ -37,14 +36,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SmartLoginConfig mSmartLoginConfig;
     private SmartLogin mSmartLogin;
     private AlertDialog mAlertDialog;
-    private static String mEmailAddress;
-    private String mBackgroundFilename;
     private UsersService mUsersService;
     private SchedulerProvider mSchedulerProvider;
     private static long mBackPressedTime;
+    private static String mCurrentUsername;
     
-    @BindView(R.id.email_edittext)
-    EditText mCustomLoginEmail;
+    @BindView(R.id.username_edittext)
+    EditText mCustomLoginUsername;
     
     @BindView(R.id.password_edittext)
     EditText mCustomLoginPassword;
@@ -125,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             super.onBackPressed();
         else
         {
-            showToast("Press once again to exit", false);
+            showToast(Constants.SECOND_PRESS_POPUP_TOAST, false);
             mBackPressedTime = System.currentTimeMillis();
         }
     }
@@ -133,40 +131,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginSuccess(SmartUser user)
     {
-        hideKeyboard();
-        
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
-            createUser(getSocialUserDTO(user));
+            sendSocialUserToDb(user);
         
         setProfileData(user);
         updateUi();
         navigateToHome();
         
         showToast(Constants.USER_LOGGED_IN_TOAST, false);
-    }
-    
-    private UserDTO getSocialUserDTO(SmartUser user)
-    {
-        UserDTO userDTO = new UserDTO(user.getUserId());
-        
-        if (user instanceof SmartGoogleUser)
-            userDTO.setLoginType(Constants.LOGIN_TYPE_GOOGLE);
-        else
-            userDTO.setLoginType(Constants.LOGIN_TYPE_FACEBOOK);
-        
-        return userDTO;
-    }
-    
-    private void hideKeyboard()
-    {
-        try
-        {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e)
-        {
-            showToast(e.getMessage(), true);
-        }
     }
     
     private void setProfileData(SmartUser user)
@@ -184,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             profilePicUrl = Constants.FB_GRAPH_PROFILE_PIC_URL_PART1 + user.getUserId() +
                     Constants.FB_GRAPH_PROFILE_PIC_URL_PART2;
         } else
-            name = user.getEmail();
+            name = user.getUsername();
         
         if (profilePicUrl == null)
             profilePicUrl = Constants.NO_PROFILE_PIC_AVATAR_URL;
@@ -193,6 +165,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Glide.with(this)
                 .load(profilePicUrl)
                 .into(mProfilePictureView);
+    }
+    
+    private void sendSocialUserToDb(SmartUser user)
+    {
+        UserDTO userToSend = new UserDTO();
+        
+        if (user instanceof SmartGoogleUser)
+        {
+            userToSend.setUsername(user.getEmail());
+            userToSend.setGoogleId(user.getUserId());
+        } else if (user instanceof SmartFacebookUser)
+        {
+            StringBuilder customUsername = new StringBuilder()
+                    .append((((SmartFacebookUser) user)
+                            .getProfileName()
+                            .toLowerCase())
+                            .replace(" ", ""))
+                    .append(user.getUserId().substring(0, 4));
+            userToSend.setUsername(customUsername.toString());
+            userToSend.setFacebookId(user.getUserId());
+        }
+        
+        createUser(userToSend);
     }
     
     @Override
@@ -205,7 +200,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public SmartUser doCustomLogin()
     {
         SmartUser customUser = new SmartUser();
-        customUser.setEmail(mEmailAddress);
+        customUser.setUsername(mCurrentUsername);
         
         return customUser;
     }
@@ -214,13 +209,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public SmartUser doCustomSignup()
     {
         SmartUser customUser = new SmartUser();
-        customUser.setEmail(mEmailAddress);
+        customUser.setUsername(mCurrentUsername);
         
         return customUser;
     }
     
-    public void showToast(String message, boolean important)
+    private void hideKeyboard()
     {
+        try
+        {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void showToast(String message, boolean important)
+    {
+        hideKeyboard();
         Toast.makeText(this,
                 message,
                 important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)
@@ -234,39 +242,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         {
             case R.id.custom_signin_button:
             {
-                String email = mCustomLoginEmail.getText().toString();
+                String username = mCustomLoginUsername.getText().toString();
                 String password = mCustomLoginPassword.getText().toString();
                 
-                searchUser(email, password);
-                try
-                {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                if (isPasswordCorrectIfUserExists(username, password))
+                    mCurrentUsername = username;
                 
-                if (mEmailAddress != null)
+                if (mCurrentUsername != null)
                 {
                     mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
                     mSmartLogin.login(mSmartLoginConfig);
                 } else
                 {
-                    if (!email.isEmpty() && !password.isEmpty())
-                        showToast(Constants.WRONG_EMAIL_OR_PASSWORD_TOAST, true);
+                    if (!username.isEmpty() && !password.isEmpty())
+                        showToast(Constants.WRONG_USERNAME_OR_PASSWORD_TOAST, true);
                 }
             }
             break;
             case R.id.custom_signup_button:
-            {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
                 
                 @SuppressLint("InflateParams")
-                View mView = getLayoutInflater().inflate(
-                        R.layout.dialog_user_signup,
-                        null);
+                View mView = getLayoutInflater()
+                        .inflate(R.layout.dialog_user_signup, null);
                 
-                final EditText mEmail = mView.findViewById(R.id.et_email);
+                final EditText mUsername = mView.findViewById(R.id.et_username);
                 final EditText mPassword = mView.findViewById(R.id.et_password);
                 final EditText mConfirmPassword = mView.findViewById(R.id.et_confirm_password);
                 Button mAddButton = mView.findViewById(R.id.btn_add);
@@ -274,18 +274,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 
                 mAddButton.setOnClickListener(v1 ->
                 {
-                    String email = mEmail.getText().toString();
-                    String password = mPassword.getText().toString();
-                    String confirmedPassword = mConfirmPassword.getText().toString();
+                    routePostUserCreationData(
+                            mUsername.getText().toString(),
+                            mPassword.getText().toString(),
+                            mConfirmPassword.getText().toString());
                     
-                    routePostUserCreationData(email, password, confirmedPassword);
-                    
+                    hideKeyboard();
                     mAlertDialog.dismiss();
-                    showToast(Constants.USER_SIGNED_UP_TOAST, false);
                 });
                 
                 mCancelButton.setOnClickListener(v2 ->
                 {
+                    hideKeyboard();
                     mAlertDialog.dismiss();
                 });
                 
@@ -295,12 +295,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 
                 if (!mAlertDialog.isShowing())
                 {
-                    hideKeyboard();
                     mSmartLogin = SmartLoginFactory.build(LoginType.CustomSignup);
                     mSmartLogin.signup(mSmartLoginConfig);
                 }
-            }
-            break;
+                break;
             case R.id.google_login_button:
                 mSmartLogin = SmartLoginFactory.build(LoginType.Google);
                 mSmartLogin.login(mSmartLoginConfig);
@@ -319,7 +317,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     else
                     {
                         mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
-                        mEmailAddress = null;
+                        mCurrentUsername = null;
                     }
                     
                     if (mSmartLogin.logout(getApplicationContext()))
@@ -333,26 +331,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     
-    public void createUser(UserDTO user)
+    private void createUser(UserDTO user)
     {
-        Disposable disposable = Observable
-                .create((ObservableOnSubscribe<UserDTO>) emitter ->
-                {
-                    if (!mUsersService.getAllUsers().contains(user))
-                        mUsersService.createUser(user);
-                    else
-                        return;
-                    
-                    emitter.onComplete();
-                })
+        Observable.create((ObservableOnSubscribe<UserDTO>) emitter ->
+        {
+            try
+            {
+                mUsersService.createUser(user);
+                emitter.onComplete();
+            } catch (Exception e)
+            {
+                emitter.onError(e);
+            }
+        })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
-                .doOnError(e -> showToast(e.getMessage(), true))
-                .subscribe();
+                .subscribe(
+                        msg -> showToast(Constants.USER_SIGNED_UP_TOAST, true),
+                        err -> showToast(err.getMessage(), true));
     }
     
-    public void routePostUserCreationData(String email, String password,
-                                          String confirmedPassword)
+    private void routePostUserCreationData(String username, String password, String confirmedPassword)
     {
         if (!password.equals(confirmedPassword))
         {
@@ -360,46 +359,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
         
-        if (email.isEmpty() || password.isEmpty())
+        if (username.isEmpty() || password.isEmpty())
         {
             showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
             return;
         }
         
-        createUser(new UserDTO(email, BCrypt.hashpw(password, BCrypt.gensalt())));
+        createUser(new UserDTO(username.toLowerCase(), BCrypt.hashpw(password, BCrypt.gensalt())));
     }
     
-    public void searchUser(String email, String password)
+    private boolean isPasswordCorrectIfUserExists(String username, String password)
     {
-        if (email.isEmpty() || password.isEmpty())
+        if (username.isEmpty() || password.isEmpty())
         {
             showToast(Constants.NOT_ALL_FIELDS_FILLED_TOAST, true);
-            return;
+            return false;
         }
         
-        Disposable disposable = Observable
-                .create((ObservableOnSubscribe<UserDTO>) emitter ->
-                {
-                    UserDTO fakeUser = new UserDTO();
-                    fakeUser.setEmail(email);
-                    
-                    mUsersService.getAllUsers()
-                            .forEach(user ->
-                            {
-                                if (user.equals(fakeUser))
-                                    if (BCrypt.checkpw(password, user.getPassword()))
-                                    {
-                                        mEmailAddress = email;
-                                        return;
-                                    }
-                            });
-                    
-                    emitter.onComplete();
-                })
-                .subscribeOn(mSchedulerProvider.background())
-                .observeOn(mSchedulerProvider.ui())
-                .doOnError(e -> showToast(e.getMessage(), true))
-                .subscribe();
+        try
+        {
+            UserDTO user = mUsersService.getByUsername(username);
+            if (user != null)
+                if (BCrypt.checkpw(password, user.getPassword()))
+                    return true;
+        } catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        
+        return false;
     }
     
     private void updateUi()
@@ -409,7 +398,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mCurrentUser != null)
         {
             mProfileSection.setVisibility(View.VISIBLE);
-            mCustomLoginEmail.setVisibility(View.GONE);
+            mCustomLoginUsername.setVisibility(View.GONE);
             mCustomLoginPassword.setVisibility(View.GONE);
             mCustomLoginButton.setVisibility(View.GONE);
             mCustomSignupButton.setVisibility(View.GONE);
@@ -417,10 +406,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mGoogleLoginButton.setVisibility(View.GONE);
         } else
         {
-            mCustomLoginEmail.setText(Constants.EMPTY_STRING, TextView.BufferType.NORMAL);
-            mCustomLoginPassword.setText(Constants.EMPTY_STRING, TextView.BufferType.NORMAL);
+            mCustomLoginUsername.setText(new String(), TextView.BufferType.NORMAL);
+            mCustomLoginPassword.setText(new String(), TextView.BufferType.NORMAL);
             mProfileSection.setVisibility(View.GONE);
-            mCustomLoginEmail.setVisibility(View.VISIBLE);
+            mCustomLoginUsername.setVisibility(View.VISIBLE);
             mCustomLoginPassword.setVisibility(View.VISIBLE);
             mCustomLoginButton.setVisibility(View.VISIBLE);
             mCustomSignupButton.setVisibility(View.VISIBLE);

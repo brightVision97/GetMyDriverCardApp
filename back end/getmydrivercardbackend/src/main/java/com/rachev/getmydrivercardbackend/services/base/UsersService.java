@@ -4,10 +4,11 @@ import com.rachev.getmydrivercardbackend.models.UserDTO;
 
 import java.util.List;
 
-public interface GetMyDriverCardService {
+public interface UsersService
+{
     List<UserDTO> getAllUsers();
 
-    UserDTO getByEmail(String email);
+    UserDTO getByUsername(String username);
 
     void createUser(UserDTO userDTO);
 }

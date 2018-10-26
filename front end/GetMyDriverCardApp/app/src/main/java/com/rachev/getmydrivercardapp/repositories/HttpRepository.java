@@ -3,6 +3,7 @@ package com.rachev.getmydrivercardapp.repositories;
 import com.rachev.getmydrivercardapp.http.base.HttpRequester;
 import com.rachev.getmydrivercardapp.parsers.base.JsonParser;
 import com.rachev.getmydrivercardapp.repositories.base.Repository;
+import com.rachev.getmydrivercardapp.utils.Constants;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,19 +30,22 @@ public class HttpRepository<T> implements Repository<T>
     }
     
     @Override
-    public T getById(int id) throws IOException
+    public T getByUsername(String username) throws Exception
     {
-        String url = mServerUrl + "/" + id;
+        String url = mServerUrl + "/" + username;
         String json = mHttpRequester.get(url);
         
         return mJsonParser.fromJson(json);
     }
     
     @Override
-    public T add(T item) throws IOException
+    public T add(T item) throws Exception
     {
         String requestBody = mJsonParser.toJson(item);
         String responseBody = mHttpRequester.post(mServerUrl, requestBody);
+        
+        if (responseBody == null)
+            throw new IllegalArgumentException(Constants.USER_CANT_SIGNUP_TOAST);
         
         return mJsonParser.fromJson(responseBody);
     }
