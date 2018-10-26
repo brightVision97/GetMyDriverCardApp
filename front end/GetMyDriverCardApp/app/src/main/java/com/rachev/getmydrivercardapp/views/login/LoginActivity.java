@@ -131,6 +131,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginSuccess(SmartUser user)
     {
+        if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
+            sendSocialUserToDb(user);
+        
         setProfileData(user);
         updateUi();
         navigateToHome();
@@ -164,6 +167,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .into(mProfilePictureView);
     }
     
+    private void sendSocialUserToDb(SmartUser user)
+    {
+        UserDTO userToSend = new UserDTO();
+        
+        if (user instanceof SmartGoogleUser)
+        {
+            userToSend.setUsername(user.getEmail());
+            userToSend.setGoogleId(user.getUserId());
+        } else if (user instanceof SmartFacebookUser)
+        {
+            StringBuilder customUsername = new StringBuilder()
+                    .append((((SmartFacebookUser) user)
+                            .getProfileName()
+                            .toLowerCase())
+                            .replace(" ", ""))
+                    .append(user.getUserId().substring(0, 4));
+            userToSend.setUsername(customUsername.toString());
+            userToSend.setFacebookId(user.getUserId());
+        }
+        
+        createUser(userToSend);
+    }
+    
     @Override
     public void onLoginFailure(SmartLoginException e)
     {
@@ -194,18 +220,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         {
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    private void showKeyboard()
-    {
-        try
-        {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.showSoftInput(getCurrentFocus().getRootView(), 0);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -258,7 +272,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Button mAddButton = mView.findViewById(R.id.btn_add);
                 Button mCancelButton = mView.findViewById(R.id.btn_cancel);
                 
-                showKeyboard();
                 mAddButton.setOnClickListener(v1 ->
                 {
                     routePostUserCreationData(
