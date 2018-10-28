@@ -36,7 +36,7 @@ public class OkHttpHttpRequester implements HttpRequester
     public String post(String url, String bodyString) throws IOException
     {
         RequestBody body = RequestBody.create(
-                MediaType.parse(Constants.JSON_MEDIA_TYPE),
+                MediaType.parse(Constants.Strings.JSON_MEDIA_TYPE),
                 bodyString);
         
         Request request = new Request.Builder()
@@ -48,7 +48,7 @@ public class OkHttpHttpRequester implements HttpRequester
                 .newCall(request)
                 .execute();
         
-        return response.code() == Constants.HTTP_STATUS_OK
+        return response.code() == Constants.Integers.HTTP_STATUS_OK
                 ? response.body().string()
                 : null;
     }

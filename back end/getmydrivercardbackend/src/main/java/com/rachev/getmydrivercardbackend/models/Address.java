@@ -1,4 +1,4 @@
-package com.rachev.getmydrivercardbackend.models.dtos;
+package com.rachev.getmydrivercardbackend.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AddressDTO
+public class Address
 {
     @Id
     @NotNull

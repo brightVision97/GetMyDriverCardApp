@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend;
 
-import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +20,7 @@ public class GetmydrivercardbackendApplication
     {
         return new Configuration()
                 .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(UserDTO.class)
+                .addAnnotatedClass(User.class)
                 .buildSessionFactory();
     }
 }

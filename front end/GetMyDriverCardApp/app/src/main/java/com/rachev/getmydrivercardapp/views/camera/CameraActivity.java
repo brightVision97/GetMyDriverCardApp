@@ -25,6 +25,8 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener
 {
+    public static final int IDENTIFIER = 663;
+    
     @BindView(R.id.camera)
     CameraView mCameraView;
     

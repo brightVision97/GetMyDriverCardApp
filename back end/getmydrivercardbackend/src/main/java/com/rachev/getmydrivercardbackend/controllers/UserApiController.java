@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
-import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
 import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +20,20 @@ public class UserApiController
     }
     
     @GetMapping
-    public List<UserDTO> getAllUsers()
+    public List<User> getAllUsers()
     {
         return usersService.getAllUsers();
     }
     
     @GetMapping("/{username}")
-    public UserDTO getByUsername(@PathVariable String username)
+    public User getByUsername(@PathVariable String username)
     {
         return usersService.getByUsername(username);
     }
     
     @PostMapping
-    public void createUser(@RequestBody UserDTO userDTO)
+    public void createUser(@RequestBody User user)
     {
-        usersService.createUser(userDTO);
+        usersService.createUser(user);
     }
 }

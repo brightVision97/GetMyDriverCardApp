@@ -1,4 +1,4 @@
-package com.rachev.getmydrivercardbackend.models.dtos;
+package com.rachev.getmydrivercardbackend.models;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class UserDTO
+public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class UserDTO
     @Column(name = "role")
     private String role;
     
-    public UserDTO()
+    public User()
     {
         username = null;
         password = null;

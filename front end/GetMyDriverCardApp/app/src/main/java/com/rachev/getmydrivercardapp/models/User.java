@@ -4,7 +4,7 @@ import com.rachev.getmydrivercardapp.utils.Constants;
 
 import java.io.Serializable;
 
-public class UserDTO implements Serializable
+public class User implements Serializable
 {
     public int id;
     public String username;
@@ -13,15 +13,15 @@ public class UserDTO implements Serializable
     public String googleId;
     public String role;
     
-    public UserDTO()
+    public User()
     {
     }
     
-    public UserDTO(String username, String password)
+    public User(String username, String password)
     {
         setUsername(username);
         setPassword(password);
-        setRole(Constants.USER_ROLE);
+        setRole(Constants.Strings.USER_ROLE);
     }
     
     public int getId()

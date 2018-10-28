@@ -45,7 +45,7 @@ public class HttpRepository<T> implements Repository<T>
         String responseBody = mHttpRequester.post(mServerUrl, requestBody);
         
         if (responseBody == null)
-            throw new IllegalArgumentException(Constants.USER_CANT_SIGNUP_TOAST);
+            throw new IllegalArgumentException(Constants.Strings.USER_COULD_NOT_SIGNUP);
         
         return mJsonParser.fromJson(responseBody);
     }

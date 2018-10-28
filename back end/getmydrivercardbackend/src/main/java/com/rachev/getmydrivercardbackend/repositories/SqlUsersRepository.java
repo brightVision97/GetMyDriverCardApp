@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.repositories;
 
-import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
 import com.rachev.getmydrivercardbackend.repositories.base.UsersRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,13 +23,13 @@ public class SqlUsersRepository implements UsersRepository
     }
     
     @Override
-    public void create(UserDTO userDTO)
+    public void create(User user)
     {
-        userDTO.setRole("userDTO");
+        user.setRole("user");
         try (Session session = sessionFactory.openSession())
         {
             Transaction transaction = session.beginTransaction();
-            session.save(userDTO);
+            session.save(user);
             transaction.commit();
         } catch (Exception e)
         {
@@ -39,13 +39,13 @@ public class SqlUsersRepository implements UsersRepository
     }
     
     @Override
-    public UserDTO getByUsername(String username)
+    public User getByUsername(String username)
     {
-        UserDTO result = null;
+        User result = null;
         try (Session session = sessionFactory.openSession())
         {
             Transaction transaction = session.beginTransaction();
-            result = (UserDTO) session.createQuery("from UserDTO where username = :username")
+            result = (User) session.createQuery("from User where username = :username")
                     .setParameter("username", username)
                     .getSingleResult();
             transaction.commit();
@@ -54,22 +54,24 @@ public class SqlUsersRepository implements UsersRepository
             System.err.println(e.getMessage());
             throw new RuntimeException(e);
         }
+        
         return result;
     }
     
     @Override
-    public List<UserDTO> getAll()
+    public List<User> getAll()
     {
-        List<UserDTO> result = new ArrayList<>();
+        List<User> result = new ArrayList<>();
         try (Session session = sessionFactory.openSession())
         {
             session.beginTransaction();
-            result = session.createQuery("from UserDTO").list();
+            result = session.createQuery("from User").list();
             session.getTransaction().commit();
         } catch (Exception e)
         {
             e.printStackTrace();
         }
+        
         return result;
     }
 }

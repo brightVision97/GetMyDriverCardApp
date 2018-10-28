@@ -27,6 +27,8 @@ import java.io.FileOutputStream;
 
 public class SignatureActivity extends AppCompatActivity
 {
+    public static final int IDENTIFIER = 915;
+    
     @BindView(R.id.signature_view)
     SignatureView mSignatureView;
     

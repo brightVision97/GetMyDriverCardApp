@@ -3,7 +3,7 @@ package com.rachev.getmydrivercardapp.views.login;
 import android.annotation.SuppressLint;
 import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.async.base.SchedulerProvider;
-import com.rachev.getmydrivercardapp.models.UserDTO;
+import com.rachev.getmydrivercardapp.models.User;
 import com.rachev.getmydrivercardapp.services.base.UsersService;
 import com.rachev.getmydrivercardapp.utils.BCrypt;
 import com.rachev.getmydrivercardapp.utils.Constants;
@@ -14,19 +14,18 @@ import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
 import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
 import studios.codelight.smartloginlibrary.users.SmartUser;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoginPresenter implements LoginContracts.Presenter
 {
     private LoginContracts.View mView;
+    private LoginContracts.Navigator mNavigator;
     private final UsersService mUsersService;
     private final SchedulerProvider mSchedulerProvider;
     
+    protected LoginPresenter()
     {
         mUsersService = GetMyDriverCardApplication.getUsersService();
         mSchedulerProvider = GetMyDriverCardApplication.getSchedulerProvider();
-    }
-    
-    protected LoginPresenter()
-    {
     }
     
     @Override
@@ -41,15 +40,22 @@ public class LoginPresenter implements LoginContracts.Presenter
         mView = null;
     }
     
+    @Override
+    public void setNavigator(LoginContracts.Navigator navigator)
+    {
+        mNavigator = navigator;
+    }
+    
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    private void createUser(UserDTO user)
+    private void createUser(User user)
     {
-        Observable.create((ObservableOnSubscribe<UserDTO>) emitter ->
+        Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
             try
             {
                 mUsersService.createUser(user);
+                
                 emitter.onNext(user);
                 emitter.onComplete();
             } catch (Exception e)
@@ -59,56 +65,78 @@ public class LoginPresenter implements LoginContracts.Presenter
         })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
-                .subscribe(msg -> mView.showCrouton(Constants.USER_SIGNED_UP_TOAST, Style.CONFIRM, false),
-                        err -> mView.showCrouton(err.getMessage(), Style.ALERT, true));
+                .subscribe(
+                        msg -> mView.showCrouton(Constants.Strings.USER_SIGNED_UP,
+                                Style.CONFIRM, false),
+                        err -> mView.showCrouton(err.getMessage(),
+                                Style.ALERT, true));
     }
     
     @Override
-    public void routePostUserCreationData(String username, String password, String confirmedPassword)
+    public void routePostUserCreationData(String username, String password,
+                                          String confirmedPassword)
     {
         if (!password.equals(confirmedPassword))
         {
-            mView.showCrouton(Constants.PASSWORDS_NO_MATCH_TOAST, Style.ALERT, true);
+            mView.showCrouton(Constants.Strings.PASSWORDS_NOT_MATCHING,
+                    Style.ALERT, true);
             return;
         }
         
         if (username.isEmpty() || password.isEmpty())
         {
-            mView.showCrouton(Constants.NOT_ALL_FIELDS_FILLED_TOAST, Style.ALERT, true);
+            mView.showCrouton(Constants.Strings.NOT_ALL_FIELDS_FILLED,
+                    Style.ALERT, true);
             return;
         }
         
-        createUser(new UserDTO(username.toLowerCase(), BCrypt.hashpw(password, BCrypt.gensalt())));
+        createUser(new User(username.toLowerCase(), BCrypt.hashpw(password, BCrypt.gensalt())));
     }
     
+    @SuppressLint("CheckResult")
     @Override
-    public boolean isPasswordCorrectIfUserExists(String username, String password)
+    public void isPasswordCorrectIfUserExists(String username, String password)
     {
         if (username.isEmpty() || password.isEmpty())
         {
-            mView.showCrouton(Constants.NOT_ALL_FIELDS_FILLED_TOAST, Style.ALERT, true);
-            return false;
+            mView.showCrouton(Constants.Strings.NOT_ALL_FIELDS_FILLED,
+                    Style.ALERT, true);
+            return;
         }
         
-        try
+        Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
-            UserDTO user = mUsersService.getByUsername(username);
-            if (user != null)
-                if (BCrypt.checkpw(password, user.getPassword()))
-                    return true;
-        } catch (Exception e)
-        {
-            System.err.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        
-        return false;
+            try
+            {
+                User user = mUsersService.getByUsername(username);
+                
+                emitter.onNext(user);
+                emitter.onComplete();
+            } catch (Exception e)
+            {
+                emitter.onError(e);
+            }
+        })
+                .subscribeOn(mSchedulerProvider.background())
+                .observeOn(mSchedulerProvider.ui())
+                .subscribe(user ->
+                {
+                    if (BCrypt.checkpw(password, user.getPassword()))
+                    {
+                        mView.setProfileNameOnLogin(username);
+                        mView.performLoginClick(username);
+                        mView.showCrouton(Constants.Strings.USER_LOGGED_IN,
+                                Style.CONFIRM, false);
+                    } else
+                        mView.showCrouton(Constants.Strings.WRONG_USERNAME_OR_PASSWORD,
+                                Style.ALERT, false);
+                }, e -> mView.showCrouton(Constants.Strings.USER_INCORRECT_CREDENTIALS, Style.ALERT, false));
     }
     
     @Override
     public void prepareAndSendSocialUserDbEntry(SmartUser user)
     {
-        UserDTO userToSend = new UserDTO();
+        User userToSend = new User();
         
         if (user instanceof SmartGoogleUser)
         {

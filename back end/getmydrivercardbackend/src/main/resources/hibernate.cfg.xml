@@ -31,7 +31,7 @@
             true
         </property>
 
-        <mapping class="com.rachev.getmydrivercardbackend.models.dtos.UserDTO" />
+        <mapping class="com.rachev.getmydrivercardbackend.models.User" />
 
     </session-factory>
 </hibernate-configuration>

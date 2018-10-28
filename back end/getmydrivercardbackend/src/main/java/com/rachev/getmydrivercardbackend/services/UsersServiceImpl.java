@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.services;
 
-import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
 import com.rachev.getmydrivercardbackend.repositories.base.UsersRepository;
 import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.stereotype.Service;
@@ -20,20 +20,20 @@ public class UsersServiceImpl implements UsersService
     }
     
     @Override
-    public List<UserDTO> getAllUsers()
+    public List<User> getAllUsers()
     {
         return usersRepository.getAll();
     }
     
     @Override
-    public UserDTO getByUsername(String username)
+    public User getByUsername(String username)
     {
         return usersRepository.getByUsername(username);
     }
     
     @Override
-    public void createUser(UserDTO userDTO)
+    public void createUser(User user)
     {
-        usersRepository.create(userDTO);
+        usersRepository.create(user);
     }
 }

@@ -1,4 +1,4 @@
-package com.rachev.getmydrivercardbackend.models.dtos;
+package com.rachev.getmydrivercardbackend.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ApplicantDetailsDTO
+public class ApplicantDetails
 {
     @Id
     @NotNull
@@ -49,5 +49,5 @@ public class ApplicantDetailsDTO
     
     // Relations missing
     @NotNull
-    private AddressDTO address;
+    private Address address;
 }

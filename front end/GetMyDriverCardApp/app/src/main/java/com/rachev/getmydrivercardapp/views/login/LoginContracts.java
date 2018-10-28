@@ -11,6 +11,10 @@ public interface LoginContracts
         
         void showCrouton(String message, Style style, boolean importance);
         
+        void setProfileNameOnLogin(String username);
+        
+        void performLoginClick(String username);
+        
         void navigateToHome();
     }
     
@@ -20,9 +24,11 @@ public interface LoginContracts
         
         void unsubscribe();
         
+        void setNavigator(Navigator navigator);
+        
         void routePostUserCreationData(String username, String password, String passwordConfirmed);
         
-        boolean isPasswordCorrectIfUserExists(String username, String password);
+        void isPasswordCorrectIfUserExists(String username, String password);
         
         void prepareAndSendSocialUserDbEntry(SmartUser user);
     }

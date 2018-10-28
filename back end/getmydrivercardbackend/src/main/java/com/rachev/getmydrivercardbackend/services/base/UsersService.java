@@ -1,14 +1,14 @@
 package com.rachev.getmydrivercardbackend.services.base;
 
-import com.rachev.getmydrivercardbackend.models.dtos.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
 
 import java.util.List;
 
 public interface UsersService
 {
-    List<UserDTO> getAllUsers();
+    List<User> getAllUsers();
 
-    UserDTO getByUsername(String username);
+    User getByUsername(String username);
 
-    void createUser(UserDTO userDTO);
+    void createUser(User user);
 }
