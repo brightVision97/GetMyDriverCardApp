@@ -1,6 +1,8 @@
 package com.rachev.getmydrivercardapp;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import com.rachev.getmydrivercardapp.async.AsyncSchedulerProvider;
 import com.rachev.getmydrivercardapp.async.base.SchedulerProvider;
 import com.rachev.getmydrivercardapp.http.OkHttpHttpRequester;
@@ -21,6 +23,26 @@ public class GetMyDriverCardApplication extends Application
     private static JsonParser<User> mJsonParser;
     private static Repository<User> mRepository;
     private static UsersService mUsersService;
+    private static boolean isNightModeEnabled;
+    
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isNightModeEnabled = mPrefs.getBoolean("NIGHT_MODE", false);
+    }
+    
+    public static boolean isNightModeEnabled()
+    {
+        return isNightModeEnabled;
+    }
+    
+    public void setIsNightModeEnabled(boolean isNightModeEnabledParam)
+    {
+        isNightModeEnabled = isNightModeEnabledParam;
+    }
     
     public static SchedulerProvider getSchedulerProvider()
     {
@@ -64,4 +86,6 @@ public class GetMyDriverCardApplication extends Application
         
         return mUsersService;
     }
+    
+    
 }

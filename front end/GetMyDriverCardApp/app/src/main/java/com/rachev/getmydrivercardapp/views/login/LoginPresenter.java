@@ -130,7 +130,8 @@ public class LoginPresenter implements LoginContracts.Presenter
                     } else
                         mView.showCrouton(Constants.Strings.WRONG_USERNAME_OR_PASSWORD,
                                 Style.ALERT, false);
-                }, e -> mView.showCrouton(Constants.Strings.USER_INCORRECT_CREDENTIALS, Style.ALERT, false));
+                }, e -> mView.showCrouton(Constants.Strings.USER_INCORRECT_CREDENTIALS,
+                        Style.ALERT, false));
     }
     
     @Override

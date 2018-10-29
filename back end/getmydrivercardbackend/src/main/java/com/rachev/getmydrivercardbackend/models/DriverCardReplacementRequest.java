@@ -10,7 +10,7 @@ public class DriverCardReplacementRequest extends Request
     {
         switch (replacementReason)
         {
-            case EXCHANGE_FOR_GB_CARD:
+            case EXCHANGE_FOR_BG_CARD:
                 break;
             case LOST:
                 break;
@@ -31,13 +31,7 @@ public class DriverCardReplacementRequest extends Request
     }
     
     @Override
-    protected void send(Address address)
-    {
-    
-    }
-    
-    @Override
-    protected void pay(double fee)
+    protected void pay(double fee, Address address)
     {
     
     }

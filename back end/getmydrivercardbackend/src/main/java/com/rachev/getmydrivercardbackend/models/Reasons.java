@@ -6,7 +6,7 @@ public enum Reasons
     
     public enum Replacement
     {
-        EXCHANGE_FOR_GB_CARD, LOST, STOLEN, MALFUNCTIONED, DAMAGED;
+        EXCHANGE_FOR_BG_CARD, LOST, STOLEN, MALFUNCTIONED, DAMAGED;
         
         private static final String TYPE_EXCHANGE_FOR_GB_CARD = "exchange";
         private static final String TYPE_LOST = "lost";
@@ -19,7 +19,7 @@ public enum Reasons
             switch (name)
             {
                 case TYPE_EXCHANGE_FOR_GB_CARD:
-                    return EXCHANGE_FOR_GB_CARD;
+                    return EXCHANGE_FOR_BG_CARD;
                 case TYPE_LOST:
                     return LOST;
                 case TYPE_STOLEN:

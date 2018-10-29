@@ -23,7 +23,5 @@ public abstract class Request
         this.applicantDetails = applicantDetails;
     }
     
-    protected abstract void send(Address address);
-    
-    protected abstract void pay(double fee);
+    protected abstract void pay(double fee, Address address);
 }

@@ -2,6 +2,7 @@ package com.rachev.getmydrivercardapp.views.login;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import com.rachev.getmydrivercardapp.R;
 import com.rachev.getmydrivercardapp.utils.Constants;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -19,6 +20,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContracts.N
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+    
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         
         mPresenter = new LoginPresenter();
         mLoginFragment = LoginFragment.getInstance();
