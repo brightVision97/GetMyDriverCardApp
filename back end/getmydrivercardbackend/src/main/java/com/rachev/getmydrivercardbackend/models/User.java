@@ -6,18 +6,18 @@ import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDTO
+public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
+    @Column(name = "user_id", unique = true)
     private int id;
     
     @Nullable
@@ -36,13 +36,19 @@ public class UserDTO
     @Column(name = "google_id")
     private String googleId;
     
-    @NotNull
-    @Column(name = "role")
-    private String role;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
     
-    public UserDTO(String username, String password)
+    User(User user)
     {
-        this.username = username;
-        this.password = password;
+        setId(user.getId());
+        setUsername(user.getUsername());
+        setPassword(user.getPassword());
+        setRoles(user.getRoles());
+        setGoogleId(user.getGoogleId());
+        setFacebookid(user.getFacebookid());
     }
 }

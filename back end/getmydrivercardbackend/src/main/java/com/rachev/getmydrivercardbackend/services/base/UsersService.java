@@ -1,14 +1,13 @@
 package com.rachev.getmydrivercardbackend.services.base;
 
-import com.rachev.getmydrivercardbackend.models.UserDTO;
+import com.rachev.getmydrivercardbackend.models.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UsersService
+public interface UsersService extends UserDetailsService
 {
-    List<UserDTO> getAllUsers();
-
-    UserDTO getByUsername(String username);
-
-    void createUser(UserDTO userDTO);
+    List<User> getAllUsers();
+    
+    User createUser(User user);
 }

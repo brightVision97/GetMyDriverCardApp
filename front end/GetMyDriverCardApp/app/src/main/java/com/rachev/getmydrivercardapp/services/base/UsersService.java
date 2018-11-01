@@ -1,14 +1,14 @@
 package com.rachev.getmydrivercardapp.services.base;
 
-import com.rachev.getmydrivercardapp.models.UserDTO;
+import com.rachev.getmydrivercardapp.models.User;
 
 import java.util.List;
 
 public interface UsersService
 {
-    List<UserDTO> getAllUsers() throws Exception;
+    List<User> getAllUsers() throws Exception;
     
-    UserDTO getByUsername(String username) throws Exception;
+    User getByUsername(String username) throws Exception;
     
-    UserDTO createUser(UserDTO user) throws Exception;
+    User createUser(User user) throws Exception;
 }

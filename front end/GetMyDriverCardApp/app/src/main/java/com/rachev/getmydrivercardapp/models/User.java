@@ -1,27 +1,29 @@
 package com.rachev.getmydrivercardapp.models;
 
-import com.rachev.getmydrivercardapp.utils.Constants;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-public class UserDTO implements Serializable
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class User implements Serializable
 {
-    public int id;
-    public String username;
-    public String password;
-    public String facebookId;
-    public String googleId;
-    public String role;
+    private int id;
+    private String username;
+    private String password;
+    private String facebookId;
+    private String googleId;
+    private Set<Role> roles;
     
-    public UserDTO()
+    public User()
     {
     }
     
-    public UserDTO(String username, String password)
+    public User(String username, String password)
     {
         setUsername(username);
         setPassword(password);
-        setRole(Constants.USER_ROLE);
     }
     
     public int getId()
@@ -74,13 +76,13 @@ public class UserDTO implements Serializable
         this.googleId = googleId;
     }
     
-    public String getRole()
+    public Set<Role> getRoles()
     {
-        return role;
+        return new HashSet<>(roles);
     }
     
-    public void setRole(String role)
+    public void setRoles(Set<Role> roles)
     {
-        this.role = role;
+        this.roles = roles;
     }
 }

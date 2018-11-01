@@ -1,9 +1,8 @@
 package com.rachev.getmydrivercardapp.views.camera;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,23 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Facing;
 import com.rachev.getmydrivercardapp.R;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener
 {
+    public static final int IDENTIFIER = 663;
+    
     @BindView(R.id.camera)
     CameraView mCameraView;
     
@@ -42,6 +51,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         
         mCaptureButton.setOnClickListener(this);
         mToggleButton.setOnClickListener(this);
+        
+        getCameraPermission();
         
         mCameraView.setLifecycleOwner(this);
         mCameraView.addCameraListener(new CameraListener()
@@ -75,18 +86,38 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
     
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults)
+    private void getCameraPermission()
     {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        
-        boolean valid = true;
-        
-        for (int grantResult : grantResults)
-            valid = valid && grantResult == PackageManager.PERMISSION_GRANTED;
-        
-        if (valid && !mCameraView.isStarted())
-            mCameraView.start();
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.CAMERA)
+                .withListener(new PermissionListener()
+                {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response)
+                    {
+                        Crouton.makeText(CameraActivity.this,
+                                "Permission granted",
+                                Style.CONFIRM)
+                                .show();
+                    }
+                    
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response)
+                    {
+                        Crouton.makeText(CameraActivity.this,
+                                "Permission denied",
+                                Style.ALERT)
+                                .show();
+                    }
+                    
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+                                                                   PermissionToken token)
+                    {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .onSameThread()
+                .check();
     }
 }
