@@ -19,6 +19,7 @@ public class Constants
         public static final String BASE_SERVER_URL = "http://192.168.0.102:9090/api";
     
         public static final String USERS_URL_SUFFIX = "/users";
+        public static final String USER_ME_SUFFIX = "/me";
     
         public static final String LOGIN_TYPE_GOOGLE = "google";
         public static final String LOGIN_TYPE_FACEBOOK = "facebook";

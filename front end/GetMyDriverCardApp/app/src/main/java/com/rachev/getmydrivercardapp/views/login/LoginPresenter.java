@@ -127,7 +127,9 @@ public class LoginPresenter implements LoginContracts.Presenter
     @Override
     public void fetchSecuredResourcesOnLogin(String username, String password)
     {
-        final String url = Constants.Strings.BASE_SERVER_URL + "/users/me";
+        final String url = Constants.Strings.BASE_SERVER_URL +
+                Constants.Strings.USERS_URL_SUFFIX +
+                Constants.Strings.USER_ME_SUFFIX;
         
         Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
