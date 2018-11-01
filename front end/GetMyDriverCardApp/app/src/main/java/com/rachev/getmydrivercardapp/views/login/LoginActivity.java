@@ -38,6 +38,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContracts.N
                 .commit();
     }
     
+   
+    
     @Override
     public void onBackPressed()
     {
@@ -55,7 +57,18 @@ public class LoginActivity extends AppCompatActivity implements LoginContracts.N
     public void navigateToHome()
     {
         if (UserSessionManager.getCurrentUser(this) != null)
+        {
             if (!getIntent().getBooleanExtra("isHomeOrigin", false))
-                startActivity(new Intent(this, HomeActivity.class));
+            {
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        } else
+        {
+            if (getIntent().getBooleanExtra("hasLoggedOut", false))
+                mLoginFragment.showCrouton(Constants.Strings.USER_LOGGED_OUT,
+                        Style.INFO, false);
+        }
     }
 }

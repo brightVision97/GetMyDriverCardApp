@@ -10,7 +10,18 @@ import android.widget.ImageButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.rachev.getmydrivercardapp.R;
+import com.rachev.getmydrivercardapp.utils.Constants;
 import com.rachev.getmydrivercardapp.views.login.LoginActivity;
+import de.keyboardsurfer.android.widget.crouton.Configuration;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+import studios.codelight.smartloginlibrary.LoginType;
+import studios.codelight.smartloginlibrary.SmartLogin;
+import studios.codelight.smartloginlibrary.SmartLoginFactory;
+import studios.codelight.smartloginlibrary.UserSessionManager;
+import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
+import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
+import studios.codelight.smartloginlibrary.users.SmartUser;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -26,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.my_requests_card_view)
     CardView mMyRequestsCardView;
     
-    @BindView(R.id.home_logout_card_view)
+    @BindView(R.id.logout_card_view)
     CardView mLogoutCardView;
     
     @BindView(R.id.my_profile_button)
@@ -38,7 +49,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.my_requests_button)
     ImageButton mMyRequestsButton;
     
-    @BindView(R.id.home_logout_button)
+    @BindView(R.id.logout_button)
     ImageButton mLogoutButton;
     
     @Override
@@ -57,6 +68,33 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mNewRequestButton.setOnClickListener(this);
         mMyRequestsButton.setOnClickListener(this);
         mLogoutButton.setOnClickListener(this);
+        
+        if (getIntent().getBooleanExtra("hasLoggedIn", false))
+            showCrouton(Constants.Strings.USER_LOGGED_IN,
+                    Style.CONFIRM, false);
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        
+        Crouton.cancelAllCroutons();
+    }
+    
+    public void showCrouton(String message, Style style, boolean important)
+    {
+        Crouton.makeText(this, message,
+                new Style.Builder(style)
+                        .setHeight(Constants.Integers.CROUTON_HEIGHT)
+                        .setTextSize(Constants.Integers.CROUTON_TEXT_SIZE)
+                        .build())
+                .setConfiguration(new Configuration.Builder()
+                        .setDuration(important
+                                ? Constants.Integers.CROUTON_LONG_DURATION
+                                : Constants.Integers.CROUTON_SHORT_DURATION)
+                        .build())
+                .show();
     }
     
     @Override
@@ -65,26 +103,41 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.my_profile_card_view:
-                v = mMyProfileButton;
+                mMyProfileButton.performClick();
                 break;
             case R.id.new_request_card_view:
-                v = mNewRequestButton;
+                mNewRequestButton.performClick();
                 break;
             case R.id.my_requests_card_view:
-                v = mMyRequestsButton;
+                mMyRequestsButton.performClick();
                 break;
-            case R.id.home_logout_card_view:
-                v = mLogoutButton;
+            case R.id.logout_card_view:
+                mLogoutButton.performClick();
+                break;
             case R.id.my_profile_button:
-                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                intent.putExtra("isHomeOrigin", true);
-                startActivity(intent);
                 break;
             case R.id.new_request_button:
                 break;
             case R.id.my_requests_button:
                 break;
-            case R.id.home_logout_button:
+            case R.id.logout_button:
+                SmartUser currentUser = UserSessionManager.getCurrentUser(this);
+                SmartLogin smartLogin = null;
+                
+                if (currentUser instanceof SmartFacebookUser)
+                    smartLogin = SmartLoginFactory.build(LoginType.Facebook);
+                else if (currentUser instanceof SmartGoogleUser)
+                    smartLogin = SmartLoginFactory.build(LoginType.Google);
+                else
+                    smartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
+                
+                smartLogin.logout(getApplicationContext());
+                
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("isHomeOrigin", true);
+                intent.putExtra("hasLoggedOut", true);
+                startActivity(intent);
                 break;
             default:
                 break;

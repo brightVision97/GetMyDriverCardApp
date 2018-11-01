@@ -13,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.bumptech.glide.Glide;
 import com.rachev.getmydrivercardapp.R;
 import com.rachev.getmydrivercardapp.utils.Constants;
 import com.rachev.getmydrivercardapp.views.home.HomeActivity;
@@ -41,7 +41,6 @@ public class LoginFragment extends Fragment
     private AlertDialog mAlertDialog;
     private LoginContracts.Presenter mPresenter;
     private LoginContracts.Navigator mNavigator;
-    private boolean mIsUserAuthorized;
     
     @BindView(R.id.username_edittext)
     EditText mCustomLoginUsername;
@@ -60,18 +59,6 @@ public class LoginFragment extends Fragment
     
     @BindView(R.id.google_login_button)
     Button mGoogleLoginButton;
-    
-    @BindView(R.id.btn_logout)
-    Button mLogoutButton;
-    
-    @BindView(R.id.profile_name)
-    TextView mProfileNameTextView;
-    
-    @BindView(R.id.profile_section)
-    LinearLayout mProfileSection;
-    
-    @BindView(R.id.profile_pic)
-    ImageView mProfilePictureView;
     
     public LoginFragment()
     {
@@ -99,20 +86,8 @@ public class LoginFragment extends Fragment
         mCustomSignupButton.setOnClickListener(this);
         mGoogleLoginButton.setOnClickListener(this);
         mFacebookLoginButton.setOnClickListener(this);
-        mLogoutButton.setOnClickListener(this);
-        
-        mProfileSection.setVisibility(View.GONE);
         
         return view;
-    }
-    
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        
-        if (UserSessionManager.getCurrentUser(getContext()) != null)
-            mIsUserAuthorized = true;
     }
     
     @Override
@@ -121,10 +96,6 @@ public class LoginFragment extends Fragment
         super.onResume();
         
         mPresenter.subscribe(this);
-        mCurrentUser = UserSessionManager.getCurrentUser(getContext());
-        
-        if (mCurrentUser != null)
-            setProfileData(mCurrentUser);
         
         navigateToHome();
     }
@@ -148,40 +119,15 @@ public class LoginFragment extends Fragment
     @Override
     public void onLoginSuccess(SmartUser user)
     {
-        mIsUserAuthorized = true;
-        
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
         {
             mPresenter.prepareAndSendSocialUserDbEntry(user);
             showCrouton(Constants.Strings.USER_LOGGED_IN, Style.CONFIRM, false);
         }
         
-        setProfileData(user);
-        
-        startActivity(new Intent(getContext(), HomeActivity.class));
-    }
-    
-    private void setProfileData(SmartUser user)
-    {
-        String name = user.getUsername();
-        String profilePicUrl = Constants.Strings.BLANK_PROFILE_PIC_IMG_URL;
-        
-        if (user instanceof SmartGoogleUser)
-        {
-            name = ((SmartGoogleUser) user).getDisplayName();
-            profilePicUrl = ((SmartGoogleUser) user).getPhotoUrl();
-        } else if (user instanceof SmartFacebookUser)
-        {
-            name = ((SmartFacebookUser) user).getProfileName();
-            profilePicUrl = Constants.Strings.FB_PROFILE_PIC_URL_PRE_ID
-                    + user.getUserId()
-                    + Constants.Strings.FB_PROFILE_PIC_URL_POST_ID;
-        }
-        
-        mProfileNameTextView.setText(name);
-        Glide.with(this)
-                .load(profilePicUrl)
-                .into(mProfilePictureView);
+        Intent intent = new Intent(getContext(), HomeActivity.class);
+        intent.putExtra("hasLoggedIn", true);
+        startActivity(intent);
     }
     
     @Override
@@ -299,21 +245,6 @@ public class LoginFragment extends Fragment
                 mSmartLogin = SmartLoginFactory.build(LoginType.Facebook);
                 mSmartLogin.login(mSmartLoginConfig);
                 break;
-            case R.id.btn_logout:
-                if (mCurrentUser != null)
-                {
-                    if (mCurrentUser instanceof SmartFacebookUser)
-                        mSmartLogin = SmartLoginFactory.build(LoginType.Facebook);
-                    else if (mCurrentUser instanceof SmartGoogleUser)
-                        mSmartLogin = SmartLoginFactory.build(LoginType.Google);
-                    else
-                        mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
-                    
-                    if (mSmartLogin.logout(getContext()) && mIsUserAuthorized)
-                        showCrouton(Constants.Strings.USER_LOGGED_OUT, Style.INFO, false);
-                }
-                navigateToHome();
-                break;
             default:
                 break;
         }
@@ -327,44 +258,9 @@ public class LoginFragment extends Fragment
     }
     
     @Override
-    public void performLogout()
-    {
-        mIsUserAuthorized = false;
-        mLogoutButton.performClick();
-    }
-    
-    @Override
     public void dismissSignupDialog()
     {
         mAlertDialog.dismiss();
-    }
-    
-    private void updateUi()
-    {
-        mCurrentUser = UserSessionManager.getCurrentUser(getContext());
-        
-        hideKeyboard(getActivity());
-        if (mCurrentUser != null)
-        {
-            mProfileSection.setVisibility(View.VISIBLE);
-            mCustomLoginUsername.setVisibility(View.GONE);
-            mCustomLoginPassword.setVisibility(View.GONE);
-            mCustomLoginButton.setVisibility(View.GONE);
-            mCustomSignupButton.setVisibility(View.GONE);
-            mFacebookLoginButton.setVisibility(View.GONE);
-            mGoogleLoginButton.setVisibility(View.GONE);
-        } else
-        {
-            mCustomLoginUsername.setText("", TextView.BufferType.NORMAL);
-            mCustomLoginPassword.setText("", TextView.BufferType.NORMAL);
-            mProfileSection.setVisibility(View.GONE);
-            mCustomLoginUsername.setVisibility(View.VISIBLE);
-            mCustomLoginPassword.setVisibility(View.VISIBLE);
-            mCustomLoginButton.setVisibility(View.VISIBLE);
-            mCustomSignupButton.setVisibility(View.VISIBLE);
-            mFacebookLoginButton.setVisibility(View.VISIBLE);
-            mGoogleLoginButton.setVisibility(View.VISIBLE);
-        }
     }
     
     @Override
@@ -389,7 +285,6 @@ public class LoginFragment extends Fragment
     @Override
     public void navigateToHome()
     {
-        updateUi();
         mNavigator.navigateToHome();
     }
 }

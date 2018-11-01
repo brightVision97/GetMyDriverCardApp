@@ -170,16 +170,10 @@ public class LoginPresenter implements LoginContracts.Presenter
                         {
                             if (e.getMessage().trim().equals(HttpStatus.UNAUTHORIZED.toString())
                                     || e.getMessage().trim().equals(HttpStatus.FORBIDDEN.toString()))
-                            {
-                                mView.performLogout();
                                 mView.showCrouton(Constants.Strings.USER_INCORRECT_CREDENTIALS,
                                         Style.ALERT, true);
-                            } else
-                            {
+                            else
                                 mView.performLogin();
-                                mView.showCrouton(Constants.Strings.USER_LOGGED_IN,
-                                        Style.CONFIRM, false);
-                            }
                         });
     }
 }

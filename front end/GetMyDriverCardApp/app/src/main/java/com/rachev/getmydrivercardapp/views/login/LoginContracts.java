@@ -13,8 +13,6 @@ public interface LoginContracts
         
         void performLogin();
         
-        void performLogout();
-        
         void dismissSignupDialog();
         
         void navigateToHome();
