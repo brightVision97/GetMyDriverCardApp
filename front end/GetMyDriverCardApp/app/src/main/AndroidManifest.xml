@@ -40,6 +40,7 @@
 
         <activity android:name=".views.signature.SignatureActivity" />
 
+        <activity android:name=".views.home.HomeActivity" />
     </application>
 
 </manifest>

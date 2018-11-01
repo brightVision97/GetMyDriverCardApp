@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.rachev.getmydrivercardapp.R;
 import com.rachev.getmydrivercardapp.utils.Constants;
+import com.rachev.getmydrivercardapp.views.home.HomeActivity;
 import de.keyboardsurfer.android.widget.crouton.Configuration;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -156,7 +157,8 @@ public class LoginFragment extends Fragment
         }
         
         setProfileData(user);
-        navigateToHome();
+        
+        startActivity(new Intent(getContext(), HomeActivity.class));
     }
     
     private void setProfileData(SmartUser user)
