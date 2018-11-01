@@ -36,7 +36,7 @@ public class OkHttpHttpRequester implements HttpRequester
     public String post(String url, String bodyString) throws IOException
     {
         RequestBody body = RequestBody.create(
-                MediaType.parse(Constants.Strings.JSON_MEDIA_TYPE),
+                MediaType.parse(org.springframework.http.MediaType.APPLICATION_JSON_VALUE),
                 bodyString);
         
         Request request = new Request.Builder()

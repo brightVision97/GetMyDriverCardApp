@@ -1,7 +1,9 @@
 package com.rachev.getmydrivercardapp.views.login;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,8 +28,6 @@ import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
 import studios.codelight.smartloginlibrary.users.SmartUser;
 import studios.codelight.smartloginlibrary.util.SmartLoginException;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -40,7 +40,7 @@ public class LoginFragment extends Fragment
     private AlertDialog mAlertDialog;
     private LoginContracts.Presenter mPresenter;
     private LoginContracts.Navigator mNavigator;
-    private String mCurrentUserUsername;
+    private boolean mIsUserAuthorized;
     
     @BindView(R.id.username_edittext)
     EditText mCustomLoginUsername;
@@ -106,6 +106,15 @@ public class LoginFragment extends Fragment
     }
     
     @Override
+    public void onStart()
+    {
+        super.onStart();
+        
+        if (UserSessionManager.getCurrentUser(getContext()) != null)
+            mIsUserAuthorized = true;
+    }
+    
+    @Override
     public void onResume()
     {
         super.onResume();
@@ -138,6 +147,8 @@ public class LoginFragment extends Fragment
     @Override
     public void onLoginSuccess(SmartUser user)
     {
+        mIsUserAuthorized = true;
+        
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
         {
             mPresenter.prepareAndSendSocialUserDbEntry(user);
@@ -181,7 +192,7 @@ public class LoginFragment extends Fragment
     public SmartUser doCustomLogin()
     {
         SmartUser customUser = new SmartUser();
-        customUser.setUsername(mCurrentUserUsername);
+        customUser.setUsername(mCustomLoginUsername.getText().toString());
         
         return customUser;
     }
@@ -190,30 +201,37 @@ public class LoginFragment extends Fragment
     public SmartUser doCustomSignup()
     {
         SmartUser customUser = new SmartUser();
-        customUser.setUsername(mCurrentUserUsername);
+        customUser.setUsername(mCustomLoginUsername.getText().toString());
         
         return customUser;
     }
     
-    private void hideKeyboard()
+    private void hideKeyboard(Activity activity)
     {
-        try
-        {
-            InputMethodManager imm = (InputMethodManager) getActivity()
-                    .getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getActivity()
-                    .getCurrentFocus()
-                    .getWindowToken(), 0);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(
+                Activity.INPUT_METHOD_SERVICE);
+        
+        View view = activity.getCurrentFocus();
+        if (view == null)
+            view = new View(activity);
+        
+        assert imm != null;
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    
+    private void hideKeyboardFrom(Context context, View view)
+    {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                Activity.INPUT_METHOD_SERVICE);
+        
+        assert imm != null;
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     
     @Override
     public void showCrouton(String message, Style style, boolean important)
     {
-        hideKeyboard();
+        hideKeyboard(getActivity());
         Crouton.makeText(getActivity(), message,
                 new Style.Builder(style)
                         .setHeight(Constants.Integers.CROUTON_HEIGHT)
@@ -228,18 +246,12 @@ public class LoginFragment extends Fragment
     }
     
     @Override
-    public void setProfileNameOnLogin(String username)
-    {
-        mCurrentUserUsername = username;
-    }
-    
-    @Override
     public void onClick(View v)
     {
         switch (v.getId())
         {
             case R.id.custom_signin_button:
-                mPresenter.isPasswordCorrectIfUserExists(
+                mPresenter.fetchSecuredResourcesOnLogin(
                         mCustomLoginUsername.getText().toString(),
                         mCustomLoginPassword.getText().toString());
                 break;
@@ -264,13 +276,12 @@ public class LoginFragment extends Fragment
                             mPassword.getText().toString(),
                             mConfirmPassword.getText().toString());
                     
-                    hideKeyboard();
-                    mAlertDialog.dismiss();
+                    hideKeyboard(getActivity());
                 });
                 
                 mCancelButton.setOnClickListener(v2 ->
                 {
-                    hideKeyboard();
+                    hideKeyboard(getActivity());
                     mAlertDialog.dismiss();
                 });
                 
@@ -296,7 +307,7 @@ public class LoginFragment extends Fragment
                     else
                         mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
                     
-                    if (mSmartLogin.logout(getContext()))
+                    if (mSmartLogin.logout(getContext()) && mIsUserAuthorized)
                         showCrouton(Constants.Strings.USER_LOGGED_OUT, Style.INFO, false);
                 }
                 navigateToHome();
@@ -307,18 +318,30 @@ public class LoginFragment extends Fragment
     }
     
     @Override
-    public void performLoginClick(String username)
+    public void performLogin()
     {
-        setProfileNameOnLogin(username);
         mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
         mSmartLogin.login(mSmartLoginConfig);
+    }
+    
+    @Override
+    public void performLogout()
+    {
+        mIsUserAuthorized = false;
+        mLogoutButton.performClick();
+    }
+    
+    @Override
+    public void dismissSignupDialog()
+    {
+        mAlertDialog.dismiss();
     }
     
     private void updateUi()
     {
         mCurrentUser = UserSessionManager.getCurrentUser(getContext());
         
-        hideKeyboard();
+        hideKeyboard(getActivity());
         if (mCurrentUser != null)
         {
             mProfileSection.setVisibility(View.VISIBLE);

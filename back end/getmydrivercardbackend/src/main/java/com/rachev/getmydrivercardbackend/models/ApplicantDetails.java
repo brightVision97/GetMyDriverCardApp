@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "applicant_details")
@@ -25,7 +25,7 @@ public class ApplicantDetails
     @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "birthdate")
-    private LocalDate birthDate;
+    private Date birthDate;
     
     @NotNull
     @Column(name = "egn")
@@ -48,6 +48,6 @@ public class ApplicantDetails
     private String email;
     
     // Relations missing
-    @NotNull
-    private Address address;
+//    @NotNull
+//    private Address address;
 }

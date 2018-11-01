@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    mavenCentral()
+    maven { url 'http://repo.spring.io/libs-release' }
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -20,7 +25,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-    productFlavors {
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
     }
 }
 
@@ -41,6 +51,10 @@ dependencies {
     implementation 'com.kyanogen.signatureview:signature-view:1.2'
 
     implementation 'com.karumi:dexter:5.0.0'
+
+    implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    implementation 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
 
     implementation('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         exclude group: 'com.google.android', module: 'support-v4'

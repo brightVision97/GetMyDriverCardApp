@@ -25,13 +25,7 @@ public class DriverCardRenewalRequest extends Request
     }
     
     @Override
-    protected void send(Address address)
-    {
-    
-    }
-    
-    @Override
-    protected void pay(double fee)
+    protected void pay(double fee, Address address)
     {
     
     }

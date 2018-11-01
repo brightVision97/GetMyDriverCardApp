@@ -16,16 +16,12 @@ public class Constants
     
     public class Strings
     {
-        public static final String BASE_SERVER_URL = "http://192.168.0.102:8080/api";
+        public static final String BASE_SERVER_URL = "http://192.168.0.102:9090/api";
     
         public static final String USERS_URL_SUFFIX = "/users";
     
-        public static final String JSON_MEDIA_TYPE = "application/json";
-    
         public static final String LOGIN_TYPE_GOOGLE = "google";
         public static final String LOGIN_TYPE_FACEBOOK = "facebook";
-    
-        public static final String USER_ROLE = "user";
     
         public static final String WRONG_USERNAME_OR_PASSWORD = "Wrong username or password";
         public static final String PASSWORDS_NOT_MATCHING = "Passwords don't match";
