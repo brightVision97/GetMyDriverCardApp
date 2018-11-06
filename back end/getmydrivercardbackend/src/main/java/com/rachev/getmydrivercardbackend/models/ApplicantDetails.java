@@ -19,7 +19,7 @@ public class ApplicantDetails
 {
     @Id
     @NotNull
-    @Column(name = "id", unique = true)
+    @Column(name = "details_id", unique = true)
     private int id;
     
     @NotNull
@@ -47,7 +47,8 @@ public class ApplicantDetails
     @Column(name = "email")
     private String email;
     
-    // Relations missing
-//    @NotNull
-//    private Address address;
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }

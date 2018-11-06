@@ -8,28 +8,22 @@ import java.util.List;
 
 public class HttpUsersService implements UsersService
 {
-    private final Repository<User> mRepository;
+    private final Repository<User> mUsersRepository;
     
-    public HttpUsersService(Repository<User> repository)
+    public HttpUsersService(Repository<User> usersRepository)
     {
-        mRepository = repository;
+        mUsersRepository = usersRepository;
     }
     
     @Override
     public List<User> getAllUsers() throws Exception
     {
-        return mRepository.getAll();
-    }
-    
-    @Override
-    public User getByUsername(String username) throws Exception
-    {
-        return mRepository.getByUsername(username);
+        return mUsersRepository.getAll();
     }
     
     @Override
     public User createUser(User user) throws Exception
     {
-        return mRepository.add(user);
+        return mUsersRepository.add(user);
     }
 }

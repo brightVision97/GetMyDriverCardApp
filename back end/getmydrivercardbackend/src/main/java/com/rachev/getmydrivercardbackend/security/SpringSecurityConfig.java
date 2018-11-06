@@ -51,7 +51,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
     @Override
     public void configure(WebSecurity web)
     {
-        web.ignoring().antMatchers("/api/users/signup");
+        web.ignoring()
+                .antMatchers("/api/users/signup")
+                .antMatchers("/pushnotify/send");
     }
     
     private PasswordEncoder getPasswordEncoder()

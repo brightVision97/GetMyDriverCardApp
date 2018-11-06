@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1076917819612",
+    "firebase_url": "https://getmydrivercarda-1539744697242.firebaseio.com",
+    "project_id": "getmydrivercarda-1539744697242",
+    "storage_bucket": "getmydrivercarda-1539744697242.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076917819612:android:c1dfff254048dfbb",
+        "android_client_info": {
+          "package_name": "com.rachev.getmydrivercardapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076917819612-h46uj4thvvg84005o2nccnq5p36cvka1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rachev.getmydrivercardapp",
+            "certificate_hash": "04d0b40f225ce0298127ed5a55c542c9f9fda5c4"
+          }
+        },
+        {
+          "client_id": "1076917819612-342rmddoioej6osskr02ugm3ne0ve973.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfCeK65BpjjFmGdY5DTSWE6wPLAO0BkPk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076917819612-342rmddoioej6osskr02ugm3ne0ve973.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

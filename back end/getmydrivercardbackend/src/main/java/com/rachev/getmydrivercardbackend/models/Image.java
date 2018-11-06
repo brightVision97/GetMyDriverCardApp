@@ -8,14 +8,13 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-// WIP
 @Entity
 @Table(name = "attachments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ImageAttachment
+public class Image
 {
     @Id
     @NotNull
@@ -24,6 +23,10 @@ public class ImageAttachment
     private int id;
     
     @NotNull
-    @Column(columnDefinition = "BLOB")
+    @Column(name = "image_bytes", columnDefinition = "BLOB")
     private byte[] image;
+    
+    @NotNull
+    @Column(name = "purpose")
+    private String attachmentPurpose;
 }
