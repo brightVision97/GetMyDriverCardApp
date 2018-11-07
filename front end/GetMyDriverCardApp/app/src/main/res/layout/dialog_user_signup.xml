@@ -67,7 +67,7 @@
             android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/rounded_button"
             android:textColor="@color/white"
-            android:text="@string/signup"
+            android:text="@string/register"
             tools:ignore="ButtonStyle" />
 
     </RelativeLayout>

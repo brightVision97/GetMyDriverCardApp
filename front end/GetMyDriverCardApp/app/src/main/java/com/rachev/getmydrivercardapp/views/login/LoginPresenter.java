@@ -61,6 +61,7 @@ public class LoginPresenter implements LoginContracts.Presenter
     @SuppressLint("CheckResult")
     private void createUser(User user)
     {
+        mView.showProgressBar();
         Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
             try
@@ -78,6 +79,7 @@ public class LoginPresenter implements LoginContracts.Presenter
                 .observeOn(mSchedulerProvider.ui())
                 .doFinally(() ->
                 {
+                    mView.hideProgressBar();
                     if (mView != null)
                         mView.dismissSignupDialog();
                 })
@@ -89,6 +91,11 @@ public class LoginPresenter implements LoginContracts.Presenter
                                 Style.CONFIRM, false);
                 }, err ->
                 {
+                    if (err instanceof ResourceAccessException
+                            || err instanceof UndeliverableException)
+                        Methods.showCrouton(mView.getActivity(),
+                                Constants.Strings.CONNECTION_TO_SERVER_TIMED_OUT,
+                                Style.ALERT, true);
                     if (mView != null)
                         Methods.showCrouton(mView.getActivity(),
                                 err.getMessage(), Style.ALERT,
@@ -101,17 +108,17 @@ public class LoginPresenter implements LoginContracts.Presenter
     {
         if (!password.equals(confirmedPassword))
         {
-            Methods.showCrouton(mView.getActivity(),
+            Methods.showToast(mView.getActivity(),
                     Constants.Strings.PASSWORDS_NOT_MATCHING,
-                    Style.ALERT, true);
+                    true);
             return;
         }
         
         if (username.isEmpty() || password.isEmpty())
         {
-            Methods.showCrouton(mView.getActivity(),
+            Methods.showToast(mView.getActivity(),
                     Constants.Strings.NOT_ALL_FIELDS_FILLED,
-                    Style.ALERT, true);
+                    true);
             return;
         }
         
@@ -181,7 +188,9 @@ public class LoginPresenter implements LoginContracts.Presenter
             try
             {
                 ResponseEntity<User> responseEntity = restTemplate.exchange(
-                        url, HttpMethod.GET, new HttpEntity<>(requestHeaders), User.class);
+                        url, HttpMethod.GET,
+                        new HttpEntity<>(requestHeaders),
+                        User.class);
                 
                 emitter.onNext(responseEntity.getBody());
                 emitter.onComplete();

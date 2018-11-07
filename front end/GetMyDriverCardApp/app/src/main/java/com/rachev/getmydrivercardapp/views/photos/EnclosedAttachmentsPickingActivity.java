@@ -62,17 +62,17 @@ public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
             case R.id.take_id_pic_btn:
                 startImagePickingIntent(
                         Constants.Integers.PICK_ID_IMAGE,
-                        Constants.Strings.ID_CARD_FNAME);
+                        getString(R.string.id_card_filename));
                 break;
             case R.id.take_driving_license_pic_btn:
                 startImagePickingIntent(
                         Constants.Integers.PICK_DRIVING_LIC_IMAGE,
-                        Constants.Strings.DRIVING_LIC_FNAME);
+                        getString(R.string.driving_license_filename));
                 break;
             case R.id.take_payment_doc_pic_btn:
                 startImagePickingIntent(
                         Constants.Integers.PICK_PAYMENT_DOC_IMAGE,
-                        Constants.Strings.PAYMENT_DOC_FNAME);
+                        getString(R.string.payment_document_filename));
                 break;
         }
     }

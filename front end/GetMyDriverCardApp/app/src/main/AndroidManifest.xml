@@ -49,11 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".views.cardRequest.CardRequestActivity" />
-        <activity android:name=".views.cardRequest.FirstCardActivity" />
-        <activity android:name=".views.cardRequest.ExchangeCard" />
-        <activity android:name=".views.cardRequest.CardReplacement"></activity>
+        <activity
             android:name=".views.photos.SelfiePickingActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity

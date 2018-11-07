@@ -55,7 +55,7 @@
                 android:textColor="@color/white"
                 android:tag="custom_login_button"
                 android:background="@drawable/rounded_button"
-                android:text="@string/sign_in"
+                android:text="@string/login"
                 tools:ignore="ButtonStyle" />
 
             <Button
@@ -67,7 +67,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/rounded_button"
                 android:tag="custom_signup_button"
-                android:text="@string/sign_up_button"
+                android:text="@string/register"
                 style="?android:buttonCornerRadius" />
 
         </LinearLayout>
