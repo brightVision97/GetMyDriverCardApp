@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryColorCyan"
+    tools:context=".views.cardRequest.CardReplacement">
+
+    <TextView
+        android:id="@+id/cardReplacmentTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColorCyan"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:text="Card Replacment"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/lostCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Lost Card"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/stolenCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lostCard"
+            android:hint="Stolen Card"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/malfunctioning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/stolenCard"
+            android:hint="Malfunctioning Card"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/Damaged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/malfunctioning"
+            android:hint="Damaged Card"
+            android:textColorHint="@color/black" />
+
+
+        <Button
+            android:id="@+id/adressChange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Damaged"
+            android:hint="Changed Adress"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/nameChanged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/adressChange"
+            android:hint="Changed Name"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/pictureChanged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameChanged"
+            android:hint="Changed Picture"
+            android:textColorHint="@color/black" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

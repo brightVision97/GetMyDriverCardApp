@@ -30,7 +30,7 @@ public class User
     
     @Nullable
     @Column(name = "facebook_id")
-    private String facebookid;
+    private String facebookId;
     
     @Nullable
     @Column(name = "google_id")
@@ -49,6 +49,6 @@ public class User
         setPassword(user.getPassword());
         setRoles(user.getRoles());
         setGoogleId(user.getGoogleId());
-        setFacebookid(user.getFacebookid());
+        setFacebookId(user.getFacebookId());
     }
 }

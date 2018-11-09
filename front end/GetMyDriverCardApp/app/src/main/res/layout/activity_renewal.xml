@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryDarkColorCyan"
+    android:orientation="vertical"
+    android:weightSum="7"
+    android:id="@+id/linear_layout_first_card">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Renewal of Card"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:paddingBottom="20dp"
+        android:textColor="@color/white"
+        android:paddingTop="24dp"
+        android:gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/expiredCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Expired Card"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/suspendedCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/expiredCard"
+            android:hint="Suspended Card"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/withDrawn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/suspendedCard"
+            android:hint="Withdrawn Card"
+            android:textColorHint="@color/black" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

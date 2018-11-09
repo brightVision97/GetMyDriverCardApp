@@ -6,6 +6,16 @@
     android:orientation="vertical"
     android:padding="5dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:text="@string/enter_your_credentials"
+        android:textSize="25sp"
+        android:textColor="@color/primaryColorLime"
+        android:textStyle="bold"
+        android:gravity="center"/>
+
     <EditText
         android:id="@+id/et_username"
         android:layout_width="match_parent"
@@ -33,11 +43,11 @@
         android:hint="@string/confirm_password"
         android:inputType="textPassword" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp">
 
         <Button
             android:id="@+id/btn_cancel"
@@ -54,11 +64,12 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/rounded_button"
             android:textColor="@color/white"
-            android:text="@string/signup"
+            android:text="@string/register"
             tools:ignore="ButtonStyle" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

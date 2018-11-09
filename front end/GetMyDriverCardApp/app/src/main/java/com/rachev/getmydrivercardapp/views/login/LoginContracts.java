@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardapp.views.login;
 
-import de.keyboardsurfer.android.widget.crouton.Style;
+import android.app.Activity;
 import studios.codelight.smartloginlibrary.users.SmartUser;
 
 public interface LoginContracts
@@ -9,7 +9,11 @@ public interface LoginContracts
     {
         void setPresenter(Presenter presenter);
         
-        void showCrouton(String message, Style style, boolean importance);
+        Activity getActivity();
+        
+        void showProgressBar();
+        
+        void hideProgressBar();
         
         void performLogin();
         

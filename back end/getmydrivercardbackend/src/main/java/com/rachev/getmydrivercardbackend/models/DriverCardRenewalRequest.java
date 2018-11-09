@@ -1,32 +1,22 @@
 package com.rachev.getmydrivercardbackend.models;
 
-import com.rachev.getmydrivercardbackend.models.base.Request;
+import com.rachev.getmydrivercardbackend.models.base.BaseRequest;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.lang.Nullable;
 
-// WIP
-public class DriverCardRenewalRequest extends Request
+import javax.persistence.Column;
+
+@Getter
+@Setter
+public class DriverCardRenewalRequest extends BaseRequest
 {
-    private Reasons.Renewal renewalReason;
-    
-    {
-        switch (renewalReason)
-        {
-            case EXPIRED:
-                break;
-            case SUSPENDED_OR_WITHDRAWN:
-                break;
-            default:
-                break;
-        }
-    }
-    
-    public DriverCardRenewalRequest(ApplicantDetails applicantDetails)
-    {
-        super(applicantDetails);
-    }
+    @Nullable
+    @Column(name = "renewal_reason")
+    private String renewalReason;
     
     @Override
     protected void pay(double fee, Address address)
     {
-    
     }
 }

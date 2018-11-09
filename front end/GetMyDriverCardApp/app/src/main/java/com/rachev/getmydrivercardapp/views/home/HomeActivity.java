@@ -2,7 +2,6 @@ package com.rachev.getmydrivercardapp.views.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.GridLayout;
@@ -11,9 +10,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.rachev.getmydrivercardapp.R;
 import com.rachev.getmydrivercardapp.utils.Constants;
+import com.rachev.getmydrivercardapp.utils.Methods;
+import com.rachev.getmydrivercardapp.views.StartActivity;
 import com.rachev.getmydrivercardapp.views.login.LoginActivity;
-import de.keyboardsurfer.android.widget.crouton.Configuration;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import studios.codelight.smartloginlibrary.LoginType;
 import studios.codelight.smartloginlibrary.SmartLogin;
@@ -23,7 +22,7 @@ import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
 import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
 import studios.codelight.smartloginlibrary.users.SmartUser;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener
+public class HomeActivity extends StartActivity implements View.OnClickListener
 {
     @BindView(R.id.grid_layout)
     GridLayout mGridLayout;
@@ -70,31 +69,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mLogoutButton.setOnClickListener(this);
         
         if (getIntent().getBooleanExtra("hasLoggedIn", false))
-            showCrouton(Constants.Strings.USER_LOGGED_IN,
+            Methods.showCrouton(this, Constants.Strings.USER_LOGGED_IN,
                     Style.CONFIRM, false);
-    }
-    
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        
-        Crouton.cancelAllCroutons();
-    }
-    
-    public void showCrouton(String message, Style style, boolean important)
-    {
-        Crouton.makeText(this, message,
-                new Style.Builder(style)
-                        .setHeight(Constants.Integers.CROUTON_HEIGHT)
-                        .setTextSize(Constants.Integers.CROUTON_TEXT_SIZE)
-                        .build())
-                .setConfiguration(new Configuration.Builder()
-                        .setDuration(important
-                                ? Constants.Integers.CROUTON_LONG_DURATION
-                                : Constants.Integers.CROUTON_SHORT_DURATION)
-                        .build())
-                .show();
     }
     
     @Override
@@ -134,10 +110,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 smartLogin.logout(getApplicationContext());
                 
                 Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("isHomeOrigin", true);
                 intent.putExtra("hasLoggedOut", true);
                 startActivity(intent);
+                finish();
                 break;
             default:
                 break;

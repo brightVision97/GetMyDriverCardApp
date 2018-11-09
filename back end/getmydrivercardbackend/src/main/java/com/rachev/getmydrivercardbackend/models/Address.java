@@ -21,7 +21,7 @@ public class Address
 {
     @Id
     @NotNull
-    @Column(name = "id", unique = true)
+    @Column(name = "address_id", unique = true)
     private int id;
     
     @NotNull

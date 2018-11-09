@@ -6,7 +6,5 @@ public interface Repository<T>
 {
     List<T> getAll() throws Exception;
     
-    T getByUsername(String username) throws Exception;
-    
     T add(T item) throws Exception;
 }

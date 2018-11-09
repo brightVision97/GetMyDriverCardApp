@@ -1,38 +1,22 @@
 package com.rachev.getmydrivercardbackend.models;
 
-import com.rachev.getmydrivercardbackend.models.base.Request;
+import com.rachev.getmydrivercardbackend.models.base.BaseRequest;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.lang.Nullable;
 
-// WIP
-public class DriverCardReplacementRequest extends Request
+import javax.persistence.Column;
+
+@Getter
+@Setter
+public class DriverCardReplacementRequest extends BaseRequest
 {
-    private Reasons.Replacement replacementReason;
-    
-    {
-        switch (replacementReason)
-        {
-            case EXCHANGE_FOR_BG_CARD:
-                break;
-            case LOST:
-                break;
-            case STOLEN:
-                break;
-            case MALFUNCTIONED:
-                break;
-            case DAMAGED:
-                break;
-            default:
-                break;
-        }
-    }
-    
-    public DriverCardReplacementRequest(ApplicantDetails applicantDetails)
-    {
-        super(applicantDetails);
-    }
+    @Nullable
+    @Column(name = "replacement_reason")
+    private String replacementReason;
     
     @Override
     protected void pay(double fee, Address address)
     {
-    
     }
 }

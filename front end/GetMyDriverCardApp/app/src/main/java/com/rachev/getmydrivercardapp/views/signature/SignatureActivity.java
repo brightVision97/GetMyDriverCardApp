@@ -1,13 +1,13 @@
 package com.rachev.getmydrivercardapp.views.signature;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.karumi.dexter.Dexter;
@@ -18,6 +18,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.kyanogen.signatureview.SignatureView;
 import com.rachev.getmydrivercardapp.R;
+import com.rachev.getmydrivercardapp.utils.Constants;
+import com.rachev.getmydrivercardapp.utils.Methods;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -27,8 +29,6 @@ import java.io.FileOutputStream;
 
 public class SignatureActivity extends AppCompatActivity
 {
-    public static final int IDENTIFIER = 915;
-    
     @BindView(R.id.signature_view)
     SignatureView mSignatureView;
     
@@ -37,6 +37,8 @@ public class SignatureActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature);
+        
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         ButterKnife.bind(this);
         
@@ -58,39 +60,35 @@ public class SignatureActivity extends AppCompatActivity
         {
             case R.id.action_clear:
                 mSignatureView.clearCanvas();
-                showToast("Canvas cleared", false);
                 return true;
             case R.id.action_download:
                 File file = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES),
-                        System.currentTimeMillis() + ".png");
+                        System.currentTimeMillis() + Constants.Strings.PNG_SUFFIX);
                 
                 Bitmap bitmap = mSignatureView.getSignatureBitmap();
                 try (FileOutputStream out = new FileOutputStream(file))
                 {
                     if (bitmap != null)
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        bitmap.compress(
+                                Bitmap.CompressFormat.PNG,
+                                Constants.Integers.BITMAP_COMPRESS_QUALITY,
+                                out);
                     else
                         throw new FileNotFoundException();
                 } catch (Exception e)
                 {
-                    showToast(e.getMessage(), true);
+                    Methods.showToast(getApplicationContext(),
+                            e.getMessage(), true);
                 } finally
                 {
                     if (bitmap != null)
-                        showToast("Image saved successfully at " + file.getPath(),
+                        Methods.showToast(getApplicationContext(),
+                                Constants.Strings.SIGNATURE_SAVED_AT + file.getPath(),
                                 false);
                 }
         }
         return true;
-    }
-    
-    private void showToast(String message, boolean important)
-    {
-        Toast.makeText(getApplicationContext(),
-                message,
-                important ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)
-                .show();
     }
     
     private void getStoragePermission()
@@ -103,7 +101,7 @@ public class SignatureActivity extends AppCompatActivity
                     public void onPermissionGranted(PermissionGrantedResponse response)
                     {
                         Crouton.makeText(SignatureActivity.this,
-                                "Permission denied",
+                                Constants.Strings.PERMISSIONS_GRANTED,
                                 Style.CONFIRM)
                                 .show();
                     }
@@ -112,7 +110,7 @@ public class SignatureActivity extends AppCompatActivity
                     public void onPermissionDenied(PermissionDeniedResponse response)
                     {
                         Crouton.makeText(SignatureActivity.this,
-                                "Permission denied",
+                                Constants.Strings.PERMISSIONS_DENIED,
                                 Style.ALERT)
                                 .show();
                     }
