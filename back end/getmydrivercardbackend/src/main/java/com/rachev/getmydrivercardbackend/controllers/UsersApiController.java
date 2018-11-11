@@ -1,7 +1,7 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
 import com.rachev.getmydrivercardbackend.models.User;
-import com.rachev.getmydrivercardbackend.services.base.UsersService;
+import com.rachev.getmydrivercardbackend.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,32 +13,32 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UsersApiController
 {
-    private final UsersService usersService;
+    private final CustomUserDetailsService usersService;
     
     @Autowired
-    public UsersApiController(UsersService usersService)
+    public UsersApiController(CustomUserDetailsService usersService)
     {
         this.usersService = usersService;
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/secured")
+    @GetMapping("/secured/getAll")
     public List<User> getAllUsers()
     {
-        return usersService.getAllUsers();
+        return usersService.getAll();
     }
     
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/secured/{username}")
-    public User getByUsername(@PathVariable String username)
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/get/{userId}")
+    public User getUserById(@PathVariable int userId)
     {
-        return (User) usersService.loadUserByUsername(username);
+        return usersService.getById(userId);
     }
     
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/me")
-    public @ResponseBody
-    User getCurrentUser(Principal principal)
+    @ResponseBody
+    public User getCurrentUser(Principal principal)
     {
         return (User) usersService.loadUserByUsername(principal.getName());
     }
@@ -47,6 +47,6 @@ public class UsersApiController
     @PostMapping("/signup")
     public User createUser(@RequestBody User user)
     {
-        return usersService.createUser(user);
+        return usersService.add(user);
     }
 }

@@ -1,6 +1,6 @@
 package com.rachev.getmydrivercardbackend.controllers;
 
-import com.rachev.getmydrivercardbackend.models.base.BaseRequest;
+import com.rachev.getmydrivercardbackend.models.BaseRequest;
 import com.rachev.getmydrivercardbackend.services.base.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,21 +24,27 @@ public class RequestsApiController
     @GetMapping("/secured/getAll")
     public List<BaseRequest> getAllRequests()
     {
-        return requestsService.getAllRequests();
+        return requestsService.getAll();
     }
     
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/secured/getAll/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/secured/get/{id}")
     public List<BaseRequest> getAllRequestsById(@PathVariable int id)
     {
-        return requestsService.getRequestsById(id);
+        return requestsService.getAllByUserId(id);
     }
     
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @ResponseBody
-    @PostMapping("/secured/create")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/get/{id}")
+    public BaseRequest getRequestById(@PathVariable int id)
+    {
+        return requestsService.getById(id);
+    }
+    
+    @PreAuthorize("hasAnyRole('USER')")
+    @PostMapping("/create")
     public BaseRequest createRequest(@RequestBody BaseRequest baseRequest)
     {
-        return requestsService.createRequest(baseRequest);
+        return requestsService.add(baseRequest);
     }
 }

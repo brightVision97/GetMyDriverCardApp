@@ -39,14 +39,9 @@ public class AndroidPushNotificationsService
         {
             json.put("to", deviceToken.trim());
             
-            JSONObject data = new JSONObject();
-            data.put("Key-1", message);
-            json.put("data", data);
-            
             JSONObject info = new JSONObject();
             info.put("title", "Driver card application status update");
             info.put("body", "Your card request is now approved");
-            info.put("message", "");
             json.put("notification", info);
         } catch (JSONException e)
         {

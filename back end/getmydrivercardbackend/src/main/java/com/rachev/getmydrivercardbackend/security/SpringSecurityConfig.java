@@ -1,7 +1,7 @@
 package com.rachev.getmydrivercardbackend.security;
 
 import com.rachev.getmydrivercardbackend.repositories.UsersRepository;
-import com.rachev.getmydrivercardbackend.services.base.UsersService;
+import com.rachev.getmydrivercardbackend.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -20,10 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 {
-    private final UsersService usersService;
+    private final CustomUserDetailsService usersService;
     
     @Autowired
-    public SpringSecurityConfig(UsersService usersService)
+    public SpringSecurityConfig(CustomUserDetailsService usersService)
     {
         this.usersService = usersService;
     }
@@ -32,6 +32,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception
     {
         http
+                .csrf()
+                .disable()
                 .authorizeRequests()
                 .antMatchers("**/secured/**")
                 .hasRole("ADMIN")
@@ -51,9 +53,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
     @Override
     public void configure(WebSecurity web)
     {
-        web.ignoring()
-                .antMatchers("/api/users/signup")
-                .antMatchers("/pushnotify/send");
+        web.ignoring().antMatchers("/api/users/signup");
     }
     
     private PasswordEncoder getPasswordEncoder()

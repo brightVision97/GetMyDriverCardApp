@@ -17,11 +17,11 @@ public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", unique = true)
+    @Column(name = "user_id")
     private int id;
     
     @Nullable
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
     
     @Nullable
@@ -37,7 +37,7 @@ public class User
     private String googleId;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
