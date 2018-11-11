@@ -1,14 +1,12 @@
 package com.rachev.getmydrivercardbackend.services.base;
 
-import com.rachev.getmydrivercardbackend.models.base.BaseRequest;
+import com.rachev.getmydrivercardbackend.models.BaseRequest;
 
 import java.util.List;
 
-public interface RequestsService
+public interface RequestsService extends BaseService<BaseRequest>
 {
-    List<BaseRequest> getAllRequests();
+    List<BaseRequest> getAllByUserId(int userId);
     
-    List<BaseRequest> getRequestsById(int id);
-    
-    BaseRequest createRequest(BaseRequest baseRequest);
+    void updateRequestStatus(int requestId, String requestStatus);
 }

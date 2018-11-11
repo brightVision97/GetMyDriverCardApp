@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "applicant_details")
+@Table(name = "applicants_details")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,14 +18,9 @@ import java.util.Date;
 public class ApplicantDetails
 {
     @Id
-    @NotNull
-    @Column(name = "details_id", unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "details_id")
     private int id;
-    
-    @NotNull
-    @Temporal(TemporalType.DATE)
-    @Column(name = "birthdate")
-    private Date birthDate;
     
     @NotNull
     @Column(name = "egn")
@@ -44,11 +39,18 @@ public class ApplicantDetails
     private String lastName;
     
     @NotNull
+    @Column(name = "birthdate")
+    private String birthDate;
+    
+    @NotNull
     @Column(name = "email")
     private String email;
     
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @Column(name = "address")
+    private String address;
+    
+    @NotNull
+    @Column(name = "phone_number")
+    private String phoneNumber;
 }
