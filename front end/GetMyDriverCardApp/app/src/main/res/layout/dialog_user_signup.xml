@@ -54,7 +54,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/round_button_cyan"
             android:textColor="@color/white"
             android:text="@string/cancel"
             tools:ignore="ButtonStyle" />
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/btn_cancel"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/round_button_cyan"
             android:textColor="@color/white"
             android:text="@string/register"
             tools:ignore="ButtonStyle" />

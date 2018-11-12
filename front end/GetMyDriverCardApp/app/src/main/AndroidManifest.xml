@@ -34,7 +34,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".services.notifications.LikeService" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -62,7 +61,14 @@
             android:name=".views.home.HomeActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".views.StartActivity" />
-
+        <activity
+            android:name=".views.cardrequest.applicantdetails.BaseApplicantDetailsActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".views.cardrequest.preview.RequestPreviewActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".views.cardrequest.lists.RequestsListsActivity" />
+        <activity android:name=".views.profile.CurrentUserProfileActivity" />
     </application>
 
 </manifest>

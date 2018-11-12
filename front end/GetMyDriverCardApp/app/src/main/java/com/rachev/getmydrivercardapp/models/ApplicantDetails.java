@@ -1,33 +1,34 @@
 package com.rachev.getmydrivercardapp.models;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class ApplicantDetails
+public class ApplicantDetails implements Serializable
 {
     private int id;
-    private Date birthDate;
     private String egn;
+    private String birthDate;
     private String firstName;
     private String middleName;
     private String lastName;
     private String email;
-    private Address address;
+    private String address;
+    private String phoneNumber;
     
     public ApplicantDetails()
     {
     }
     
-    public ApplicantDetails(Date birthDate, String egn,
-                            String firstName, String middleName,
-                            String lastName, String email, Address address)
+    public ApplicantDetails(String egn, String birthDate, String firstName, String middleName,
+                            String lastName, String address, String email, String phoneNumber)
     {
-        setBirthDate(birthDate);
         setEgn(egn);
+        setBirthDate(birthDate);
         setFirstName(firstName);
         setMiddleName(middleName);
         setLastName(lastName);
-        setEmail(email);
         setAddress(address);
+        setEmail(email);
+        setPhoneNumber(phoneNumber);
     }
     
     public int getId()
@@ -40,12 +41,12 @@ public class ApplicantDetails
         this.id = id;
     }
     
-    public Date getBirthDate()
+    public String getBirthDate()
     {
         return birthDate;
     }
     
-    public void setBirthDate(Date birthDate)
+    public void setBirthDate(String birthDate)
     {
         this.birthDate = birthDate;
     }
@@ -100,13 +101,23 @@ public class ApplicantDetails
         this.email = email;
     }
     
-    public Address getAddress()
+    public String getAddress()
     {
         return address;
     }
     
-    public void setAddress(Address address)
+    public void setAddress(String address)
     {
         this.address = address;
+    }
+    
+    public String getPhoneNumber()
+    {
+        return phoneNumber;
+    }
+    
+    public void setPhoneNumber(String phoneNumber)
+    {
+        this.phoneNumber = phoneNumber;
     }
 }

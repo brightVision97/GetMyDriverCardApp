@@ -1,12 +1,8 @@
 package com.rachev.getmydrivercardapp.services.base;
 
-import com.rachev.getmydrivercardapp.models.User;
+import java.io.IOException;
 
-import java.util.List;
-
-public interface UsersService
+public interface UsersService<User> extends BaseService<User>
 {
-    List<User> getAllUsers() throws Exception;
-    
-    User createUser(User user) throws Exception;
+    User login(String username, String password) throws IOException;
 }

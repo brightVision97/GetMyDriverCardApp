@@ -14,11 +14,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.rachev.getmydrivercardapp.R;
+import com.rachev.getmydrivercardapp.models.User;
 import com.rachev.getmydrivercardapp.utils.Constants;
 import com.rachev.getmydrivercardapp.utils.Methods;
 import com.rachev.getmydrivercardapp.views.home.HomeActivity;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import studios.codelight.smartloginlibrary.*;
 import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity implements
     private AlertDialog mAlertDialog;
     private LoginContracts.Presenter mPresenter;
     private LoginContracts.Navigator mNavigator;
+    private AwesomeValidation mAwesomeValidation;
+    private User mUser;
     private static long mBackPressedTimes;
     
     @BindView(R.id.username_edittext)
@@ -66,10 +70,13 @@ public class LoginActivity extends AppCompatActivity implements
         
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         
-        mPresenter = new LoginPresenter();
+        mPresenter = new LoginPresenter(this);
         mPresenter.setNavigator(this);
         
         ButterKnife.bind(this, this);
+        
+        mAwesomeValidation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
+        mAwesomeValidation.setContext(this);
         
         mSmartLoginConfig = new SmartLoginConfig(this, this);
         mSmartLoginConfig.setFacebookAppId(getString(R.string.facebook_app_id));
@@ -100,12 +107,11 @@ public class LoginActivity extends AppCompatActivity implements
         super.onResume();
         
         mPresenter.subscribe(this);
-        
-        navigateToHome();
+        mCurrentUser = UserSessionManager.getCurrentUser(this);
     }
     
     @Override
-    public void onPause()
+    protected void onPause()
     {
         super.onPause();
         
@@ -113,26 +119,10 @@ public class LoginActivity extends AppCompatActivity implements
     }
     
     @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        
-        Crouton.cancelAllCroutons();
-    }
-    
-    @Override
     public void onLoginSuccess(SmartUser user)
     {
         if (user instanceof SmartGoogleUser || user instanceof SmartFacebookUser)
-            mPresenter.prepareAndSendSocialUserDbEntry(user);
-        
-        Methods.showCrouton(this,
-                Constants.Strings.USER_LOGGED_IN,
-                Style.CONFIRM, false);
-        
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("hasLoggedIn", true);
-        startActivity(intent);
+            mPresenter.createUser(Methods.getUserFromSmartUser(user));
     }
     
     @Override
@@ -144,6 +134,9 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     public SmartUser doCustomLogin()
     {
+        mPresenter.login(
+                mCustomLoginUsername.getText().toString(),
+                mCustomLoginPassword.getText().toString());
         SmartUser customUser = new SmartUser();
         customUser.setUsername(mCustomLoginUsername.getText().toString());
         
@@ -157,6 +150,12 @@ public class LoginActivity extends AppCompatActivity implements
         customUser.setUsername(mCustomLoginUsername.getText().toString());
         
         return customUser;
+    }
+    
+    @Override
+    public void setUser(User user)
+    {
+        mUser = user;
     }
     
     @Override
@@ -183,9 +182,8 @@ public class LoginActivity extends AppCompatActivity implements
         switch (v.getId())
         {
             case R.id.custom_signin_button:
-                mPresenter.fetchSecuredResourcesOnLogin(
-                        mCustomLoginUsername.getText().toString(),
-                        mCustomLoginPassword.getText().toString());
+                mSmartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
+                mSmartLogin.login(mSmartLoginConfig);
                 break;
             case R.id.custom_signup_button:
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
@@ -195,23 +193,30 @@ public class LoginActivity extends AppCompatActivity implements
                         R.layout.dialog_user_signup,
                         null);
                 
-                final EditText mUsername = mView.findViewById(R.id.et_username);
-                final EditText mPassword = mView.findViewById(R.id.et_password);
-                final EditText mConfirmPassword = mView.findViewById(R.id.et_confirm_password);
-                Button mAddButton = mView.findViewById(R.id.btn_add);
-                Button mCancelButton = mView.findViewById(R.id.btn_cancel);
+                final EditText mUsernameEditText = mView.findViewById(R.id.et_username);
+                final EditText mPasswordEditText = mView.findViewById(R.id.et_password);
+                final EditText mConfirmPasswordEditText = mView.findViewById(R.id.et_confirm_password);
+                Button mUserAddButton = mView.findViewById(R.id.btn_add);
+                Button mSignupCancelButton = mView.findViewById(R.id.btn_cancel);
                 
-                mAddButton.setOnClickListener(v1 ->
+                mAwesomeValidation.addValidation(mUsernameEditText, "[a-zA-Z0-9_-]+", "Valid username please");
+                mAwesomeValidation.addValidation(mPasswordEditText,
+                        "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{6,}",
+                        "The password should contain at least 6 characters including at least one lower case letter," +
+                                " one upper case letter, one number and one punctuation mark");
+                mAwesomeValidation.addValidation(mConfirmPasswordEditText, mPasswordEditText, "Please re-enter password");
+                
+                mUserAddButton.setOnClickListener(v1 ->
                 {
-                    mPresenter.routePostUserCreationData(
-                            mUsername.getText().toString(),
-                            mPassword.getText().toString(),
-                            mConfirmPassword.getText().toString());
+                    if (mAwesomeValidation.validate())
+                        mPresenter.createUser(new User(
+                                mUsernameEditText.getText().toString(),
+                                mPasswordEditText.getText().toString()));
                     
                     Methods.hideKeyboard(this);
                 });
                 
-                mCancelButton.setOnClickListener(v2 ->
+                mSignupCancelButton.setOnClickListener(v2 ->
                 {
                     Methods.hideKeyboard(this);
                     mAlertDialog.dismiss();
@@ -267,21 +272,12 @@ public class LoginActivity extends AppCompatActivity implements
     }
     
     @Override
-    public void navigateToHome()
+    public void navigateToHome(User user)
     {
-        if (UserSessionManager.getCurrentUser(this) != null)
-        {
-            if (!getIntent().getBooleanExtra("isHomeOrigin", false))
-            {
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        } else
-        {
-            if (getIntent().getBooleanExtra("hasLoggedOut", false))
-                Methods.showCrouton(this, Constants.Strings.USER_LOGGED_OUT,
-                        Style.INFO, false);
-        }
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("hasLoggedIn", true);
+        intent.putExtra("user", user);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

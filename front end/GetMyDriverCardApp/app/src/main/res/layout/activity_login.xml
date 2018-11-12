@@ -54,7 +54,7 @@
                 android:layout_marginEnd="5dp"
                 android:textColor="@color/white"
                 android:tag="custom_login_button"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/round_button_cyan"
                 android:text="@string/login"
                 tools:ignore="ButtonStyle" />
 
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"
                 android:textColor="@color/white"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/round_button_cyan"
                 android:tag="custom_signup_button"
                 android:text="@string/register"
                 style="?android:buttonCornerRadius" />

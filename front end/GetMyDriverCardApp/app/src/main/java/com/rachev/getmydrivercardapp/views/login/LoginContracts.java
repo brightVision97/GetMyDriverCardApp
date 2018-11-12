@@ -1,7 +1,7 @@
 package com.rachev.getmydrivercardapp.views.login;
 
 import android.app.Activity;
-import studios.codelight.smartloginlibrary.users.SmartUser;
+import com.rachev.getmydrivercardapp.models.User;
 
 public interface LoginContracts
 {
@@ -11,6 +11,8 @@ public interface LoginContracts
         
         Activity getActivity();
         
+        void setUser(User user);
+        
         void showProgressBar();
         
         void hideProgressBar();
@@ -19,7 +21,7 @@ public interface LoginContracts
         
         void dismissSignupDialog();
         
-        void navigateToHome();
+        void navigateToHome(User user);
     }
     
     interface Presenter
@@ -28,17 +30,15 @@ public interface LoginContracts
         
         void unsubscribe();
         
+        void createUser(User user);
+        
         void setNavigator(Navigator navigator);
         
-        void routePostUserCreationData(String username, String password, String passwordConfirmed);
-        
-        void prepareAndSendSocialUserDbEntry(SmartUser user);
-        
-        void fetchSecuredResourcesOnLogin(String username, String password);
+        void login(String username, String password);
     }
     
     interface Navigator
     {
-        void navigateToHome();
+        void navigateToHome(User user);
     }
 }

@@ -19,7 +19,7 @@ public class BaseRequest extends BaseSqlEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id")
+    @Column(name = "request_id", unique = true)
     private int id;
     
     @NotNull
@@ -46,7 +46,7 @@ public class BaseRequest extends BaseSqlEntity
     @JoinColumn(name = "request_attachment_id", referencedColumnName = "attachment_id")
     private ImageAttachment imageAttachment;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "request_user_id", referencedColumnName = "user_id")
     private User user;
     

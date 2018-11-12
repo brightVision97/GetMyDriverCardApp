@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -78,16 +77,13 @@ public class ImagePicker
     
     private static void bypassStrictMode()
     {
-        if (Build.VERSION.SDK_INT >= 24)
+        try
         {
-            try
-            {
-                Method m = StrictMode.class.getMethod(Constants.Strings.BYPASS_METHOD_NAME);
-                m.invoke(null);
-                strictModeBypassed = true;
-            } catch (Exception ignored)
-            {
-            }
+            Method m = StrictMode.class.getMethod(Constants.Strings.BYPASS_METHOD_NAME);
+            m.invoke(null);
+            strictModeBypassed = true;
+        } catch (Exception ignored)
+        {
         }
     }
     
