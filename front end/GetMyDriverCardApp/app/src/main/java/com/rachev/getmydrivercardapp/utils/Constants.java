@@ -6,15 +6,10 @@ public class Constants
     {
         public static final int BACK_PRESS_PERIOD = 2000;
         
-        public static final int HTTP_STATUS_OK = 200;
-        
         public static final int CROUTON_HEIGHT = 75;
         public static final int CROUTON_TEXT_SIZE = 16;
         public static final int CROUTON_LONG_DURATION = 4000;
         public static final int CROUTON_SHORT_DURATION = 2500;
-        
-        public static final int REST_CONNECT_TIMEOUT = 1000;
-        public static final int REST_READ_TIMEOUT = 1000;
         
         public static final int PICK_IMAGE_BITMAP_ID = 234;
         
@@ -24,23 +19,20 @@ public class Constants
         
         public static final int PICK_ID_IMAGE = 235;
         public static final int PICK_DRIVING_LIC_IMAGE = 236;
-        public static final int PICK_PAYMENT_DOC_IMAGE = 237;
+        public static final int PICK_PREV_CARD_IMAGE = 237;
         
         public static final int NOTIFICATION_RANDOM_BOUND = 60000;
     }
     
     public class Strings
     {
-        public static final String BASE_SERVER_URL = "http://192.168.0.103:9090/api";
+        public static final String BASE_SERVER_URL = "http://192.168.0.101:8080/api";
         
         public static final String FIREBASE_TOKEN = "cfpNjsjN5dU:APA91bG1FQaSX_" +
                 "qgyeMX7ETlx23A9O1j8rEL0ccL7cWDK2ig4ybd0AdlUwD5xm1b8l0IMDUjSvpf7NN" +
                 "0CfdQUhLS4cztEB_-iSvh3hXX2p5COIqrDnnTDC7QhbovqXB9gxrTK3yet9ob";
         
         public static final String ADMIN_CHANNEL_ID = "admin_channel";
-        public static final String ADMIN_CHANNEL_NAME = "Channel 1";
-        public static final String CHANNEL_1 = "Channel 1";
-        public static final String CHANNEL_2 = "Channel 2";
         
         public static final String NOTIFICATION_ID_EXTRA = "notification_id";
         

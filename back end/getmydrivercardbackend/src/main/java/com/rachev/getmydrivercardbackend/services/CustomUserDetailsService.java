@@ -1,13 +1,11 @@
 package com.rachev.getmydrivercardbackend.services;
 
 import com.rachev.getmydrivercardbackend.models.CustomUserDetails;
-import com.rachev.getmydrivercardbackend.models.Role;
 import com.rachev.getmydrivercardbackend.models.User;
 import com.rachev.getmydrivercardbackend.repositories.RoleRepository;
 import com.rachev.getmydrivercardbackend.repositories.UsersRepository;
 import com.rachev.getmydrivercardbackend.services.base.UsersService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

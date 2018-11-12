@@ -1,8 +1,7 @@
 package com.rachev.getmydrivercardapp.views.login;
 
 import android.annotation.SuppressLint;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import android.content.Context;
 import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.async.base.SchedulerProvider;
 import com.rachev.getmydrivercardapp.models.User;
@@ -12,30 +11,21 @@ import com.rachev.getmydrivercardapp.utils.Methods;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.exceptions.UndeliverableException;
-import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-import studios.codelight.smartloginlibrary.users.SmartFacebookUser;
-import studios.codelight.smartloginlibrary.users.SmartGoogleUser;
-import studios.codelight.smartloginlibrary.users.SmartUser;
+import io.reactivex.disposables.Disposable;
 
-import java.util.Collections;
+import java.io.IOException;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoginPresenter implements LoginContracts.Presenter
 {
     private LoginContracts.View mView;
     private LoginContracts.Navigator mNavigator;
-    private final UsersService mUsersService;
+    private final UsersService<User> mUsersService;
     private final SchedulerProvider mSchedulerProvider;
     
-    protected LoginPresenter()
+    protected LoginPresenter(Context context)
     {
-        mUsersService = GetMyDriverCardApplication.getUsersService();
+        mUsersService = GetMyDriverCardApplication.getUsersService(context);
         mSchedulerProvider = GetMyDriverCardApplication.getSchedulerProvider();
     }
     
@@ -59,16 +49,21 @@ public class LoginPresenter implements LoginContracts.Presenter
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    private void createUser(User user)
+    @Override
+    public void createUser(final User user)
     {
-        mView.showProgressBar();
-        Observable.create((ObservableOnSubscribe<User>) emitter ->
+        if (mView != null)
+            mView.showProgressBar();
+        Disposable disposable = Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
             try
             {
-                mUsersService.createUser(user);
+                User userToAdd = mUsersService.create(user);
                 
-                emitter.onNext(user);
+                if (userToAdd == null)
+                    throw new IllegalArgumentException("User already exists");
+                
+                emitter.onNext(userToAdd);
                 emitter.onComplete();
             } catch (Exception e)
             {
@@ -77,79 +72,23 @@ public class LoginPresenter implements LoginContracts.Presenter
         })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
-                .doFinally(() ->
-                {
-                    mView.hideProgressBar();
-                    if (mView != null)
-                        mView.dismissSignupDialog();
-                })
-                .subscribe(msg ->
-                {
-                    if (mView != null)
-                        Methods.showCrouton(mView.getActivity(),
-                                Constants.Strings.USER_SIGNED_UP,
-                                Style.CONFIRM, false);
-                }, err ->
-                {
-                    if (err instanceof ResourceAccessException
-                            || err instanceof UndeliverableException)
-                        Methods.showCrouton(mView.getActivity(),
-                                Constants.Strings.CONNECTION_TO_SERVER_TIMED_OUT,
-                                Style.ALERT, true);
-                    if (mView != null)
-                        Methods.showCrouton(mView.getActivity(),
-                                err.getMessage(), Style.ALERT,
-                                true);
-                });
+                .doFinally(() -> mView.hideProgressBar())
+                .subscribe(u -> login(u.getUsername(), u.getPassword()),
+                        err ->
+                        {
+                            if (err instanceof IOException)
+                                Methods.showCrouton(mView.getActivity(),
+                                        Constants.Strings.CONNECTION_TO_SERVER_TIMED_OUT,
+                                        Style.ALERT, true);
+                            if (mView != null)
+                                Methods.showCrouton(mView.getActivity(),
+                                        err.getMessage(), Style.ALERT,
+                                        true);
+                        });
     }
     
     @Override
-    public void routePostUserCreationData(String username, String password, String confirmedPassword)
-    {
-        if (!password.equals(confirmedPassword))
-        {
-            Methods.showToast(mView.getActivity(),
-                    Constants.Strings.PASSWORDS_NOT_MATCHING,
-                    true);
-            return;
-        }
-        
-        if (username.isEmpty() || password.isEmpty())
-        {
-            Methods.showToast(mView.getActivity(),
-                    Constants.Strings.NOT_ALL_FIELDS_FILLED,
-                    true);
-            return;
-        }
-        
-        createUser(new User(username, password));
-    }
-    
-    @Override
-    public void prepareAndSendSocialUserDbEntry(SmartUser user)
-    {
-        User userToSend = new User();
-        
-        if (user instanceof SmartGoogleUser)
-        {
-            userToSend.setUsername(user.getEmail());
-            userToSend.setGoogleId(user.getUserId());
-        } else if (user instanceof SmartFacebookUser)
-        {
-            String customUsername =
-                    (((SmartFacebookUser) user).getProfileName().toLowerCase())
-                            + user.getUserId().substring(0, 4)
-                            .replace(" ", "");
-            userToSend.setUsername(customUsername);
-            userToSend.setFacebookId(user.getUserId());
-        }
-        
-        createUser(userToSend);
-    }
-    
-    @SuppressLint("CheckResult")
-    @Override
-    public void fetchSecuredResourcesOnLogin(String username, String password)
+    public void login(String username, String password)
     {
         if (username.isEmpty() || password.isEmpty())
         {
@@ -164,65 +103,32 @@ public class LoginPresenter implements LoginContracts.Presenter
                 Constants.Strings.USER_ME_SUFFIX;
         
         mView.showProgressBar();
-        Observable.create((ObservableOnSubscribe<User>) emitter ->
+        Disposable disposable = Observable.create((ObservableOnSubscribe<User>) emitter ->
         {
-            HttpAuthentication authHeader = new HttpBasicAuthentication(username, password);
-            HttpHeaders requestHeaders = new HttpHeaders();
-            requestHeaders.setAuthorization(authHeader);
-            requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             
-            HttpComponentsClientHttpRequestFactory factory =
-                    new HttpComponentsClientHttpRequestFactory();
-            factory.setConnectTimeout(Constants.Integers.REST_CONNECT_TIMEOUT);
-            factory.setReadTimeout(Constants.Integers.REST_READ_TIMEOUT);
-            RestTemplate restTemplate = new RestTemplate(factory);
+            User currentUser = mUsersService.login(username, password);
             
-            MappingJackson2HttpMessageConverter messageConverter =
-                    new MappingJackson2HttpMessageConverter();
-            messageConverter.setObjectMapper(new ObjectMapper().configure(
-                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                    false));
+            if (currentUser == null)
+                throw new IllegalArgumentException(Constants.Strings.INCORRECT_CREDENTIALS);
             
-            restTemplate.getMessageConverters().add(messageConverter);
+            emitter.onNext(currentUser);
+            emitter.onComplete();
             
-            try
-            {
-                ResponseEntity<User> responseEntity = restTemplate.exchange(
-                        url, HttpMethod.GET,
-                        new HttpEntity<>(requestHeaders),
-                        User.class);
-                
-                emitter.onNext(responseEntity.getBody());
-                emitter.onComplete();
-            } catch (HttpClientErrorException e)
-            {
-                emitter.onError(e);
-            } catch (ResourceAccessException e)
-            {
-                emitter.onError(e);
-            }
         })
                 .subscribeOn(mSchedulerProvider.background())
                 .observeOn(mSchedulerProvider.ui())
                 .doFinally(mView::hideProgressBar)
-                .subscribe(user -> mView.navigateToHome(),
+                .subscribe(user -> mView.navigateToHome(user),
                         e ->
                         {
-                            if (e.getMessage().trim().equals(HttpStatus.UNAUTHORIZED.toString())
-                                    || e.getMessage().trim().equals(HttpStatus.FORBIDDEN.toString()))
+                            if (e instanceof IllegalArgumentException)
                                 Methods.showCrouton(mView.getActivity(),
                                         Constants.Strings.INCORRECT_CREDENTIALS,
                                         Style.ALERT, true);
-                            else if (e instanceof ResourceAccessException ||
-                                    e instanceof UndeliverableException)
+                            else if (e instanceof IOException)
                                 Methods.showCrouton(mView.getActivity(),
                                         Constants.Strings.CONNECTION_TO_SERVER_TIMED_OUT,
                                         Style.ALERT, true);
-                            else
-                            {
-                                if (mView != null)
-                                    mView.performLogin();
-                            }
                         });
     }
 }

@@ -8,23 +8,35 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.rachev.getmydrivercardapp.R;
+import com.rachev.getmydrivercardapp.models.BaseRequest;
 import com.rachev.getmydrivercardapp.utils.Constants;
 import com.rachev.getmydrivercardapp.utils.ImagePicker;
+import com.rachev.getmydrivercardapp.utils.Methods;
 import com.rachev.getmydrivercardapp.views.photos.base.BaseImagePickingActivity;
+import com.rachev.getmydrivercardapp.views.signature.SignatureActivity;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 import java.io.File;
 
 public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
         implements View.OnClickListener
 {
+    private File mIdImage;
+    private File mDrivingLicenseImage;
+    private File mPrevTachographicCardImage;
+    private int mUploadedPicsCounter;
+    
     @BindView(R.id.take_id_pic_btn)
     Button mIdPicButton;
     
     @BindView(R.id.take_driving_license_pic_btn)
     Button mDrivingLicenseButton;
     
-    @BindView(R.id.take_payment_doc_pic_btn)
-    Button mPaymentDocumentButton;
+    @BindView(R.id.take_prev_card_pic_btn)
+    Button mPrevTachographicCardButton;
+    
+    @BindView(R.id.btn_next)
+    Button mNextButton;
     
     @BindView(R.id.id_pic_descr)
     TextView mIdPicText;
@@ -33,25 +45,25 @@ public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
     TextView mDrivingLicenseText;
     
     @BindView(R.id.payment_doc_pic_descr)
-    TextView mPaymentDocumentText;
-    
-    private File mIdImage;
-    private File mDrivingLicenseImage;
-    private File mPaymentDocumentImage;
+    TextView mPrevTachographicCardText;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enclosed_attachments__picking);
+        setContentView(R.layout.activity_enclosed_attachments_picking);
+        setTitle("Step 3");
         
         ButterKnife.bind(this);
         
         mIdPicButton.setOnClickListener(this);
         mDrivingLicenseButton.setOnClickListener(this);
-        mPaymentDocumentButton.setOnClickListener(this);
+        mPrevTachographicCardButton.setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
         
         getStoragePermission();
+        
+        mUploadedPicsCounter = 0;
     }
     
     @Override
@@ -60,19 +72,46 @@ public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
         switch (v.getId())
         {
             case R.id.take_id_pic_btn:
+                if (mIdImage == null)
+                    ++mUploadedPicsCounter;
                 startImagePickingIntent(
                         Constants.Integers.PICK_ID_IMAGE,
                         getString(R.string.id_card_filename));
                 break;
             case R.id.take_driving_license_pic_btn:
+                if (mDrivingLicenseImage == null)
+                    ++mUploadedPicsCounter;
                 startImagePickingIntent(
                         Constants.Integers.PICK_DRIVING_LIC_IMAGE,
                         getString(R.string.driving_license_filename));
                 break;
-            case R.id.take_payment_doc_pic_btn:
+            case R.id.take_prev_card_pic_btn:
                 startImagePickingIntent(
-                        Constants.Integers.PICK_PAYMENT_DOC_IMAGE,
-                        getString(R.string.payment_document_filename));
+                        Constants.Integers.PICK_PREV_CARD_IMAGE,
+                        getString(R.string.prev_card_filename));
+                break;
+            case R.id.btn_next:
+                if (mUploadedPicsCounter < 2)
+                {
+                    Methods.showCrouton(this,
+                            "At least 2 images required",
+                            Style.ALERT, true);
+                    return;
+                }
+                
+                BaseRequest baseRequest = (BaseRequest) getIntent().getSerializableExtra("request");
+                
+                Intent intent = new Intent(this, SignatureActivity.class);
+                intent.putExtra("request", baseRequest);
+                intent.putExtra("path1", mIdImage.getPath());
+                intent.putExtra("path2", mDrivingLicenseImage.getPath());
+                if (mPrevTachographicCardImage != null)
+                    intent.putExtra("path3", mPrevTachographicCardImage.getPath());
+                else
+                    intent.putExtra("path3", "");
+                startActivity(intent);
+                break;
+            default:
                 break;
         }
     }
@@ -98,8 +137,8 @@ public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
                         this, resultCode, data);
                 updateDescription();
                 break;
-            case Constants.Integers.PICK_PAYMENT_DOC_IMAGE:
-                mPaymentDocumentImage = ImagePicker.getImageFileToUpload(
+            case Constants.Integers.PICK_PREV_CARD_IMAGE:
+                mPrevTachographicCardImage = ImagePicker.getImageFileToUpload(
                         this, resultCode, data);
                 updateDescription();
                 break;
@@ -113,15 +152,15 @@ public class EnclosedAttachmentsPickingActivity extends BaseImagePickingActivity
     {
         String firstImageDescription = mIdImage == null
                 ? Constants.Strings.NO_IMG_SELECTED
-                : R.string.id_card_filename + ": " + mIdImage.getName();
+                : getString(R.string.id_card_filename) + ": " + mIdImage.getName();
         mIdPicText.setText(firstImageDescription);
         String secondImageDescription = mDrivingLicenseImage == null
                 ? Constants.Strings.NO_IMG_SELECTED
-                : R.string.driving_license_filename + ": " + mDrivingLicenseImage.getName();
+                : getString(R.string.driving_license_filename) + ": " + mDrivingLicenseImage.getName();
         mDrivingLicenseText.setText(secondImageDescription);
-        String thirdImageDescription = mPaymentDocumentImage == null
+        String thirdImageDescription = mPrevTachographicCardImage == null
                 ? Constants.Strings.NO_IMG_SELECTED
-                : R.string.payment_document_filename + ": " + mPaymentDocumentImage.getName();
-        mPaymentDocumentText.setText(thirdImageDescription);
+                : getString(R.string.prev_card_filename) + ": " + mPrevTachographicCardImage.getName();
+        mPrevTachographicCardText.setText(thirdImageDescription);
     }
 }

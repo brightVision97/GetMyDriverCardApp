@@ -1,6 +1,8 @@
 package com.rachev.getmydrivercardapp.services;
 
-import com.rachev.getmydrivercardapp.models.base.BaseRequest;
+import android.content.Context;
+import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
+import com.rachev.getmydrivercardapp.models.BaseRequest;
 import com.rachev.getmydrivercardapp.repositories.base.RequestsRepository;
 import com.rachev.getmydrivercardapp.services.base.RequestsService;
 
@@ -10,20 +12,32 @@ public class HttpRequestsService implements RequestsService
 {
     private final RequestsRepository mRequestsRepository;
     
-    public HttpRequestsService(RequestsRepository requestsRepository)
+    public HttpRequestsService(Context context)
     {
-        mRequestsRepository = requestsRepository;
+        mRequestsRepository = GetMyDriverCardApplication.getRequestsRepository(context);
     }
     
     @Override
-    public List<BaseRequest> getAllRequests() throws Exception
+    public List<BaseRequest> getAll() throws Exception
     {
         return mRequestsRepository.getAll();
     }
     
     @Override
-    public List<BaseRequest> getAllRequestsById(int id) throws Exception
+    public BaseRequest create(BaseRequest request) throws Exception
     {
-        return mRequestsRepository.getAllRequestsById(id);
+        return mRequestsRepository.add(request);
+    }
+    
+    @Override
+    public List<BaseRequest> getAllRequestsByUserId(int userId) throws Exception
+    {
+        return mRequestsRepository.getAllRequestsByUserId(userId);
+    }
+    
+    @Override
+    public void updateStatus(BaseRequest baseRequest) throws Exception
+    {
+        mRequestsRepository.updateStatus(baseRequest);
     }
 }

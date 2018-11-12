@@ -38,11 +38,13 @@ public enum Reasons
     
     public enum Renewal
     {
-        EXPIRED, SUSPENDED_OR_WITHDRAWN,
+        EXPIRED, SUSPENDED_OR_WITHDRAWN, CHANGE_NAME, UPDATE_ADDRESS,
         ;
         
         private static final String TYPE_EXPIRED = "expired";
         private static final String TYPE_SUSPENDED_OR_WITHDRAWN = "suspended/withdrawn";
+        private static final String TYPE_CHANGE_NAME = "change_name";
+        private static final String TYPE_UPDATE_ADDRESS = "update_address";
         
         @Override
         public String toString()
@@ -53,6 +55,10 @@ public enum Reasons
                     return TYPE_EXPIRED;
                 case SUSPENDED_OR_WITHDRAWN:
                     return TYPE_SUSPENDED_OR_WITHDRAWN;
+                case CHANGE_NAME:
+                    return TYPE_CHANGE_NAME;
+                case UPDATE_ADDRESS:
+                    return TYPE_UPDATE_ADDRESS;
                 default:
                     return null;
             }

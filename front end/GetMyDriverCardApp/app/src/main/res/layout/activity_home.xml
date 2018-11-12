@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome"
+        android:text="@string/welcome"
         android:textSize="44sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -53,14 +53,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shortcut_person"
-                    android:background="@color/cardview_dark_background"
+                    android:background="#FF424242"
                     android:layout_gravity="center"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Profile"
+                    android:text="@string/my_profile"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -92,14 +92,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shortcut_credit_card"
-                    android:background="@color/cardview_dark_background"
+                    android:background="#FF424242"
                     android:layout_gravity="center"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Card Request"
+                    android:text="@string/new_card_request"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -131,14 +131,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shortcut_cloud_download"
-                    android:background="@color/cardview_dark_background"
+                    android:background="#FF424242"
                     android:layout_gravity="center"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Requests"
+                    android:text="@string/my_requests"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -170,14 +170,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shortcut_keyboard_return"
-                    android:background="@color/cardview_dark_background"
+                    android:background="#FF424242"
                     android:layout_gravity="center"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Logout"
+                    android:text="@string/logout"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"

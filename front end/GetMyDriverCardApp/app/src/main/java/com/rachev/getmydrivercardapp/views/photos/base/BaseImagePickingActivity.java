@@ -34,7 +34,7 @@ public abstract class BaseImagePickingActivity extends AppCompatActivity
                     {
                         Methods.showCrouton(BaseImagePickingActivity.this,
                                 Constants.Strings.PERMISSIONS_GRANTED,
-                                Style.ALERT, false);
+                                Style.CONFIRM, false);
                     }
                     
                     @Override

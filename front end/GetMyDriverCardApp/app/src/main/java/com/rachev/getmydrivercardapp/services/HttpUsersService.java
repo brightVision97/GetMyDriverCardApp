@@ -1,29 +1,38 @@
 package com.rachev.getmydrivercardapp.services;
 
+import android.content.Context;
+import com.rachev.getmydrivercardapp.GetMyDriverCardApplication;
 import com.rachev.getmydrivercardapp.models.User;
-import com.rachev.getmydrivercardapp.repositories.base.Repository;
+import com.rachev.getmydrivercardapp.repositories.base.UserLoginRepository;
 import com.rachev.getmydrivercardapp.services.base.UsersService;
 
+import java.io.IOException;
 import java.util.List;
 
-public class HttpUsersService implements UsersService
+public class HttpUsersService implements UsersService<User>
 {
-    private final Repository<User> mUsersRepository;
+    private final UserLoginRepository<User> mUsersRepository;
     
-    public HttpUsersService(Repository<User> usersRepository)
+    public HttpUsersService(Context context)
     {
-        mUsersRepository = usersRepository;
+        mUsersRepository = GetMyDriverCardApplication.getUsersRepository(context);
     }
     
     @Override
-    public List<User> getAllUsers() throws Exception
+    public List<User> getAll() throws Exception
     {
         return mUsersRepository.getAll();
     }
     
     @Override
-    public User createUser(User user) throws Exception
+    public User create(User user) throws Exception
     {
         return mUsersRepository.add(user);
+    }
+    
+    @Override
+    public User login(String username, String password) throws IOException
+    {
+        return mUsersRepository.login(username, password);
     }
 }
