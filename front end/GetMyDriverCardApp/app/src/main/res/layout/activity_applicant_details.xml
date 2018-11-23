@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".views.cardrequest.applicantdetails.BaseApplicantDetailsActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/personal_details"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:paddingBottom="20dp"
+        android:textColor="@color/white"
+        android:paddingTop="24dp"
+        android:gravity="center" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="#FF424242"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/egn_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:maxLines="1"
+                android:layout_marginTop="5dp"
+                android:hint="@string/egn"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:textColor="@color/primaryColorLime"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/birthdate_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:maxLines="1"
+                android:layout_marginTop="5dp"
+                android:hint="@string/birthdate"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:textColor="@color/primaryColorLime"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/first_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ems="10"
+                android:hint="@string/first_name"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/middle_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ems="10"
+                android:hint="@string/middle_name"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/last_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ems="10"
+                android:hint="@string/last_name"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/address_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:maxLines="1"
+                android:hint="@string/address"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/phone_num_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:maxLines="1"
+                android:hint="@string/phone_number"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="phone" />
+
+            <EditText
+                android:id="@+id/email_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:maxLines="1"
+                android:hint="@string/email"
+                android:textColor="@color/primaryColorLime"
+                android:textColorHint="@color/primaryDarkColorLime"
+                android:inputType="textEmailAddress" />
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:background="@drawable/round_button_cyan"
+                    android:text="@string/next"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
